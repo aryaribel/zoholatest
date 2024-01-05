@@ -21,5 +21,9 @@ urlpatterns = [
 
     # -------------------------------Zoho Modules section--------------------------------
   
-    
+    ####  Vendor ###########
+    path('vendor',views.vendor,name='vendor'),
+    path('view_vendor_list',views.view_vendor_list,name='view_vendor_list'),
+
+
 ]

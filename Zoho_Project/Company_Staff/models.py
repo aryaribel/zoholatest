@@ -1,21 +1,9 @@
 from django.db import models
 
 # Create your models here.
-from django.contrib.auth.models import User
-
+from Register_Login.models import LoginDetails,CompanyDetails,PaymentTerms
 #---------------- models for zoho modules--------------------
 
-class Company(models.Model):
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
-
-class PaymentTerm(models.Model):
-    term = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.term
 
 class Vendor(models.Model):
     title = models.CharField(max_length=255)
@@ -39,7 +27,7 @@ class Vendor(models.Model):
     current_balance = models.DecimalField(max_digits=10, decimal_places=2)
     credit_limit = models.DecimalField(max_digits=10, decimal_places=2)
     source_of_supply = models.CharField(max_length=255)
-    payment_term = models.ForeignKey(PaymentTerm, on_delete=models.CASCADE)
+    payment_term = models.ForeignKey(PaymentTerms, on_delete=models.CASCADE)
     billing_attention = models.CharField(max_length=255)
     billing_address = models.TextField()
     billing_city = models.CharField(max_length=255)
@@ -58,14 +46,14 @@ class Vendor(models.Model):
     shipping_fax = models.CharField(max_length=15)
     remarks = models.TextField()
     vendor_status = models.CharField(max_length=10)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    login_details = models.ForeignKey(User, on_delete=models.CASCADE)
+    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
+    login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
 class CustomerContactPerson(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     first_name = models.CharField(max_length=255)
@@ -81,8 +69,8 @@ class CustomerContactPerson(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 class VendorHistory(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    login_details = models.ForeignKey(User, on_delete=models.CASCADE)
+    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
+    login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     date = models.DateField()
     action = models.CharField(max_length=10)
