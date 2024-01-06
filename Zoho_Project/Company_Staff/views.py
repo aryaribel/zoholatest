@@ -4,7 +4,6 @@ from Register_Login.views import logout
 
 # Create your views here.
 from django.contrib.auth.models import User,auth
-
 from Company_Staff.models import Vendor
 
 
@@ -185,12 +184,21 @@ def vendor(request):
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
         dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        company=CompanyDetails.objects.get(user=request.user)
-    return render(request,'zohomodules/create_vendor.html',{'details':dash_details,'company':company,'allmodules': allmodules})   
+        allmodules= ZohoModules.objects.get(company=dash_details,status='New')
+        # company=CompanyDetails.objects.get(user=request.user)
+    return render(request,'zohomodules/create_vendor.html',{'details':dash_details,'allmodules': allmodules})   
 def view_vendor_list(request):
-    company=CompanyDetails.objects.get(user=request.user)
-    user_id=request.user.id
-    udata=User.objects.get(id=user_id)
-    data=Vendor.objects.filter(user=udata)
-    return render(request,'zohomodules/vendor_list.html',{'data':data,'company':company}) 
+     if 'login_id' in request.session:
+        if request.session.has_key('login_id'):
+            log_id = request.session['login_id']
+           
+        else:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details,status='New')
+    # company=CompanyDetails.objects.get(user=request.user)
+    # user_id=request.user.id
+    # udata=User.objects.get(id=user_id)
+    # data=Vendor.objects.filter(user=udata)
+     return render(request,'zohomodules/vendor_list.html',{'details':dash_details,'allmodules': allmodules}) 

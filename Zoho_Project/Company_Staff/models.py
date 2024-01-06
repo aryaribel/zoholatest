@@ -2,10 +2,13 @@ from django.db import models
 
 # Create your models here.
 from Register_Login.models import LoginDetails,CompanyDetails,PaymentTerms
+from django.contrib.auth.models import User,auth
+
 #---------------- models for zoho modules--------------------
 
 
 class Vendor(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
     title = models.CharField(max_length=255)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
