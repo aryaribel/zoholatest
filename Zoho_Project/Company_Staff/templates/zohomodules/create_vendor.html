@@ -1,13 +1,21 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
-
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+<style>
+    label{
+        color: white;
+    }
+</style>
+<div class="body-wrapper">
 
 <!-- class="row fixed-top " -->
 <!-- style=" position: fixed;" -->
 
 <!-- <section > -->
     <!-- <div class="fixed-top" style="top: 7rem; margin-left: 18rem;" > -->
+        <div class="container-fluid">
         <div  style="top: 7rem; " >
 
      
@@ -20,7 +28,7 @@
               
               <div class=" form-group row">
                 <div class="col-sm-12 col-md-3 col-lg-3 col-form-label">
-                    <label >Primary Contact</label>
+                    <label>Primary Contact</label>
                 </div>
                 <div class="col-sm-12 col-md-1 col-lg-1" style="width: 5.5rem;">
                     <select id="select1"  name="salutation" class="form-control bg-light text-dark  " >
@@ -115,7 +123,7 @@
  
                  </div> -->
                  <div class="form-group row mt-4">
-                    <label class="col-sm-12 col-md-3 col-lg-3 col-form-label">Vendor phone</label>
+                    <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white">Vendor phone</label>
                      <div class="col-sm-12 col-md-3 col-lg-3">
                          <input id="workphone"  type="text" class="form-control bg-light text-dark" pattern="[0-9]{7}"   name="w_phone" placeholder="work phone" required>
                          <label for="" id="workphone_label"></label>
@@ -221,7 +229,7 @@
                     
 
                       <div class="form-group row mt-2">
-                        <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > GST Treatment*</label>
+                        <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > GST Treatment*</label>
                          
                         <div class=" col-sm-12 col-md-3 col-lg-3">
                             <select name="gst" id="GSTT" class="form-control bg-light text-dark" onclick="gstPan_function()">
@@ -240,7 +248,7 @@
                     </div>
                     <fieldset3 id="gst" style="display: none;">
                         <div class="row mt-4">
-                            <label class="col-sm-12 col-md-3 col-lg-3 col-form-label"  > GSTIN/UIN*</label>
+                            <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white"  > GSTIN/UIN*</label>
                              
                             <div class=" col-sm-12 col-md-3 col-lg-3">
                                 <input type="text" class="form-control bg-light text-dark" name="gst_number" id="gst_input" onmouseout="gst_check()"> 
@@ -255,7 +263,7 @@
 
                     <fieldset4 id="pan" style="display: none;">
                         <div class=" row mt-4">
-                            <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > PAN</label>
+                            <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > PAN</label>
                              
                             <div class=" col-sm-12 col-md-3 col-lg-3">
                                 <input type="text" class="form-control bg-light text-dark" id="pan_input" onmouseout="pan_check()" name="pan_number">  
@@ -274,7 +282,7 @@
                     
 
                 <div class="form-group row mt-4">
-                    <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > Source Of Supply*</label>
+                    <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Source Of Supply*</label>
                      
                     <div class=" col-sm-12 col-md-3 col-lg-3">
                         <select name="source_supply" id="PLACE" class="form-control bg-light text-dark">
@@ -306,7 +314,7 @@
 
 
                 <div class="form-group row mt-4">
-                    <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > Currency*</label>
+                    <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Currency*</label>
                      
                     <div class=" col-sm-12 col-md-3 col-lg-3">
                         <select name="currency" id="PLACE" class="form-control bg-light text-dark">
@@ -320,22 +328,22 @@
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-sm-12 col-md-3 col-lg-3 col-form-label">Opening Balance Type</label>
+                    <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white">Opening Balance Type</label>
                     <div class="col-sm-12 col-md-3 col-lg-3 d-flex align-items-center">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="op_type" id="debit" value="debit">
-                            <label class="form-check-label" for="debit">Debit</label>
+                            <label class="form-check-label text-white" for="debit">Debit</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="op_type" id="credit" value="credit">
-                            <label class="form-check-label" for="credit">Credit</label>
+                            <label class="form-check-label text-white" for="credit">Credit</label>
                         </div>
                     </div>
                 </div>
 
 
                 <div class="form-group row mt-4">
-                    <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > Opening Balance Amount</label>                    
+                    <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Opening Balance Amount</label>                    
                     <div class=" col-sm-12 col-md-3 col-lg-3">
                         <input  type="number" class="form-control bg-light text-dark" name="opening_bal">      
                     </div>
@@ -345,7 +353,7 @@
 
 
                 <div class="form-group row mt-4">
-                    <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > Payment Terms</label>
+                    <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Payment Terms</label>
                      
                     <div class=" col-sm-12 col-md-3 col-lg-3">
                         <select name="payment_terms" id="PLACE" class="form-control bg-light text-dark">
@@ -378,13 +386,13 @@
                                 <div class="col"></div>
                             </div>
                             <div class="form-group row mt-4">
-                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > Attention</label>                    
+                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Attention</label>                    
                                 <div class=" col-sm-12 col-md-6 col-lg-6">
                                     <input  type="text" class="form-control bg-light text-dark" name="battention" id="batten">      
                                 </div>
                             </div>
                             <div class="form-group row mt-4">
-                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > Country</label>                    
+                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Country</label>                    
                                 <div class=" col-sm-12 col-md-6 col-lg-6">
                                     <select name="bcountry" id="btry" class="form-control bg-light text-dark">
                                         <option value="India" selected>India</option>
@@ -392,25 +400,25 @@
                                 </div>
                             </div>
                             <div class="form-group row mt-4">
-                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > Address</label>                    
+                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Address</label>                    
                                 <div class=" col-sm-12 col-md-6 col-lg-6">
                                     <textarea class="form-control bg-light " style="border: none;color: rgb(7, 7, 7);" cols="26" rows="4" name="baddress" id="badd1"></textarea>
                                 </div>
                             </div>
                             <div class="form-group row mt-4">
-                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > City</label>                    
+                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > City</label>                    
                                 <div class=" col-sm-12 col-md-6 col-lg-6">
                                     <input  type="text" class="form-control bg-light text-dark" name="bcity" id="bcty">      
                                 </div>
                             </div>
                             <div class="form-group row mt-4">
-                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > State</label>                    
+                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > State</label>                    
                                 <div class=" col-sm-12 col-md-6 col-lg-6">
                                     <input type="text" class="form-control bg-light text-dark" name="bstate" id="bste">      
                                 </div>
                             </div>
                             <div class="form-group row mt-4">
-                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > Zip Code </label>                    
+                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Zip Code </label>                    
                                 <div class=" col-sm-12 col-md-6 col-lg-6">
                                     <input  type="number" class="form-control bg-light text-dark" name="bzip" id="bzp">      
                                 </div>
@@ -428,14 +436,14 @@
                                 </div>
                             </div> -->
                             <div class="form-group row mt-4">
-                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > Phone </label>                    
+                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Phone </label>                    
                                 <div class=" col-sm-12 col-md-6 col-lg-6">
                                     <input id="bphone_num"  type="tel" pattern="[0-9]{10}" class="form-control bg-light text-dark" name="bphone" >
                                     <label for="" id="bphone_label"></label>      
                                 </div>
                             </div>
                             <div class="form-group row mt-4">
-                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > Fax </label>                    
+                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Fax </label>                    
                                 <div class=" col-sm-12 col-md-6 col-lg-6">
                                     <input  type="tel" class="form-control bg-light text-dark" pattern="[0-9]{7}" onmouseout="fax_number()"  onclick="bphone_number()"                                       name="bfax" id="bfx">  
                                    
@@ -455,13 +463,13 @@
                                 </div>
                             </div>
                             <div class="form-group row mt-4">
-                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > Attention</label>                    
+                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Attention</label>                    
                                 <div class=" col-sm-12 col-md-6 col-lg-6">
                                     <input  type="text" class="form-control bg-light text-dark " style="color: white;" name="sattention" id="satten">      
                                 </div>
                             </div>
                             <div class="form-group row mt-4">
-                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > Country</label>                    
+                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Country</label>                    
                                 <div class=" col-sm-12 col-md-6 col-lg-6">
                                     <select name="scountry" id="sctry" class="form-control bg-light text-dark">
                                         <option value="India" selected>India</option>
@@ -469,25 +477,25 @@
                                 </div>
                             </div>
                             <div class="form-group row mt-4">
-                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > Address</label>                    
+                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Address</label>                    
                                 <div class=" col-sm-12 col-md-6 col-lg-6">
                                     <textarea class="form-control bg-light" style="border: none;color: rgb(10, 10, 10);" id="sadd1" cols="26" rows="4" name="saddress"></textarea>
                                 </div>
                             </div>
                             <div class="form-group row mt-4">
-                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > City</label>                    
+                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > City</label>                    
                                 <div class=" col-sm-12 col-md-6 col-lg-6">
                                     <input  type="text" class="form-control bg-light text-dark" name="scity" id="scty">      
                                 </div>
                             </div>
                             <div class="form-group row mt-4">
-                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > State</label>                    
+                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > State</label>                    
                                 <div class=" col-sm-12 col-md-6 col-lg-6">
                                     <input type="text" class="form-control bg-light text-dark" name="sstate" id="sste">      
                                 </div>
                             </div>
                             <div class="form-group row mt-4">
-                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > Zip Code </label>                    
+                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Zip Code </label>                    
                                 <div class=" col-sm-12 col-md-6 col-lg-6">
                                     <input  type="number" class="form-control bg-light text-dark" name="szip" id="szp">      
                                 </div>
@@ -506,14 +514,14 @@
                             </div> -->
 
                             <div class="form-group row mt-4">
-                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > Phone </label>                    
+                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Phone </label>                    
                                 <div class=" col-sm-12 col-md-6 col-lg-6">
                                     <input  type="tel" class="form-control bg-light text-dark" pattern="[0-9]{10}" style="color: white;" name="sphone" id="sphone_num">  
                                     <label for="" id="sphone_label"></label>    
                                 </div>
                             </div>
                             <div class="form-group row mt-4">
-                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" > Fax </label>                    
+                                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Fax </label>                    
                                 <div class=" col-sm-12 col-md-6 col-lg-6">
                                     <input  type="tel" class="form-control bg-light text-dark" pattern="[0-9]{7}" style="color: white;" name="sfax" onclick="sphone_number()" onmouseout="sfax_number()" id="sfx"> 
                                     <label for="" id="sfax_label"></label>     
@@ -625,8 +633,8 @@
     </div>
      
 
-
-
+</div>
+</div>
 
 
 <script>
