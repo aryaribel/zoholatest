@@ -25,9 +25,9 @@
               role="button" style="margin-left: 5px;"><i class="fa fa-sort "></i>
               </a>
               <div class="dropdown-menu ">
-                  <a class="dropdown-item" href="">All</a>
-                  <a class="dropdown-item" href="">Name</a>
-                  <a class="dropdown-item" href="">Amount</a>
+                <a class="dropdown-item" href="{% url 'view_vendor_list' %}">All</a>
+                <a class="dropdown-item" href="{% url 'sort_vendor_by_name' %}">Name</a>
+                <a class="dropdown-item" href="{% url 'sort_vendor_by_amount' %}">Amount</a>
               </div>
       </div>
       <div class="col-md-6"></div>
@@ -37,9 +37,9 @@
           role="button" ><i class="fa fa-filter"></i>
           </a>
           <div class="dropdown-menu ">
-              <a class="dropdown-item" href="">All</a>
-              <a class="dropdown-item" href="">Active</a>
-              <a class="dropdown-item" href="">Inactive</a>
+            <a class="dropdown-item" href="{% url 'view_vendor_list' %}">All</a>
+            <a class="dropdown-item" href="{% url 'view_vendor_active' %}">Active</a>
+            <a class="dropdown-item" href="{% url 'view_vendor_inactive' %}">Inactive</a>
           </div>
           <a href="{% url 'vendor' %}" class="btn btn-outline-warning fa fa-plus text-right px-3 py-2" role="button" style="margin-left: 5px;">
               <span class="mt-2">&nbsp;&nbsp;New</span>
@@ -74,7 +74,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <!-- {% for v in data %}
+                      {% for v in data %}
              
                       <tr id="over" class="clickable-row" data-href="{% url 'view_vendor_details' v.id %}">
              
@@ -96,7 +96,7 @@
         
                        
                       </tr>
-                      {% endfor %} -->
+                      {% endfor %}
                     </tbody>
                 </table>
                 </div>

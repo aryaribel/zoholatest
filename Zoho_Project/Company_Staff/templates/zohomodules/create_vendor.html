@@ -22,7 +22,7 @@
           <!-- <div  style="height: 600px;overflow-y: scroll;"> -->
              <h3  class="mb-5  text-white " style="font-size: 2rem;">New Vendor</h3><br>     
       
-             <form  method="post" action=""  enctype="multipart/form-data" class="">
+             <form  method="post" action="{% url 'add_vendor' %}"  enctype="multipart/form-data" class="">
               {% csrf_token %}
               
               
@@ -613,7 +613,7 @@
                 </div>
                  
                 <div class=" col-sm-12 col-md-2 col-lg-2 mt-3">
-                    <a href="" role="button" class="form-control  bg-warning text-dark" style="font-weight: bold;"><center>Cancel</center></a>
+                    <a href="{% url 'cancel_vendor' %}" role="button" class="form-control  bg-warning text-dark" style="font-weight: bold;"><center>Cancel</center></a>
 
                 </div> 
 

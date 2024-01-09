@@ -4,7 +4,8 @@ from Register_Login.views import logout
 
 # Create your views here.
 from django.contrib.auth.models import User,auth
-from Company_Staff.models import Vendor
+from Company_Staff.models import Vendor,remarks_table,CustomerContactPerson
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -202,3 +203,98 @@ def view_vendor_list(request):
     # udata=User.objects.get(id=user_id)
     # data=Vendor.objects.filter(user=udata)
      return render(request,'zohomodules/vendor_list.html',{'details':dash_details,'allmodules': allmodules}) 
+
+@login_required(login_url='login')
+def add_vendor(request):
+    if request.method=="POST":
+        vendor_data=Vendor()
+        vendor_data.salutation = request.POST.get('salutation')
+        vendor_data.first_name=request.POST['first_name']
+        vendor_data.last_name=request.POST['last_name']
+        vendor_data.company_name=request.POST['company_name']
+        vendor_data.vendor_display_name=request.POST['v_display_name']
+        vendor_data.vendor_email=request.POST['vendor_email']
+        vendor_data.phone=request.POST['w_phone']
+        vendor_data.mobile=request.POST['m_phone']
+        vendor_data.skype_name_number=request.POST['skype_number']
+        vendor_data.designation=request.POST['designation']
+        vendor_data.department=request.POST['department']
+        vendor_data.website=request.POST['website']
+        vendor_data.gst_treatment=request.POST['gst']
+        vendor_data.vendor_status="Active"
+
+        x=request.POST['gst']
+        if x=="Unregistered Business-not Registered under GST":
+            vendor_data.pan_number=request.POST['pan_number']
+            vendor_data.gst_number="null"
+        else:
+            vendor_data.gst_number=request.POST['gst_number']
+            vendor_data.pan_number=request.POST['pan_number']
+
+        vendor_data.source_of_supply=request.POST['source_supply']
+        vendor_data.currency=request.POST['currency']
+        vendor_data.opening_balance=request.POST['opening_bal']
+        vendor_data.payment_term=request.POST['payment_terms']
+
+        user_id=request.user.id
+        udata=User.objects.get(id=user_id)
+        vendor_data.user=udata
+        vendor_data.battention=request.POST['battention']
+        vendor_data.bcountry=request.POST['bcountry']
+        vendor_data.baddress=request.POST['baddress']
+        vendor_data.bcity=request.POST['bcity']
+        vendor_data.bstate=request.POST['bstate']
+        vendor_data.bzip=request.POST['bzip']
+        vendor_data.bphone=request.POST['bphone']
+        vendor_data.bfax=request.POST['bfax']
+
+        vendor_data.sattention=request.POST['sattention']
+        vendor_data.scountry=request.POST['scountry']
+        vendor_data.saddress=request.POST['saddress']
+        vendor_data.scity=request.POST['scity']
+        vendor_data.sstate=request.POST['sstate']
+        vendor_data.szip=request.POST['szip']
+        vendor_data.sphone=request.POST['sphone']
+        vendor_data.sfax=request.POST['sfax']
+        vendor_data.save()
+# .......................................................adding to remaks table.....................
+        vdata=Vendor.objects.get(id=vendor_data.id)
+        vendor=vdata
+        rdata=remarks_table()
+        rdata.remarks=request.POST['remark']
+        rdata.user=udata
+        rdata.vendor=vdata
+        rdata.save()
+
+
+#  ...........................adding multiple rows of table to model  ........................................................  
+     
+        salutation =request.POST.getlist('salutation[]')
+        first_name =request.POST.getlist('first_name[]')
+        last_name =request.POST.getlist('last_name[]')
+        email =request.POST.getlist('email[]')
+        work_phone =request.POST.getlist('wphone[]')
+        mobile =request.POST.getlist('mobile[]')
+        skype_name_number =request.POST.getlist('skype[]')
+        designation =request.POST.getlist('designation[]')
+        department =request.POST.getlist('department[]') 
+        vdata=Vendor.objects.get(id=vendor_data.id)
+        vendor=vdata
+        print("hi")
+        print(salutation)
+        if salutation != ['Select']:
+            if len(salutation)==len(first_name)==len(last_name)==len(email)==len(work_phone)==len(mobile)==len(skype_name_number)==len(designation)==len(department):
+                mapped2=zip(salutation,first_name,last_name,email,work_phone,mobile,skype_name_number,designation,department)
+                mapped2=list(mapped2)
+                print(mapped2)
+                for ele in mapped2:
+                    created = CustomerContactPerson.objects.get_or_create(salutation=ele[0],first_name=ele[1],last_name=ele[2],email=ele[3],
+                            work_phone=ele[4],mobile=ele[5],skype_number=ele[6],designation=ele[7],department=ele[8],user=udata,vendor=vendor)
+            
+       
+                 
+        return redirect('view_vendor_list')
+    
+def cancel_vendor(request):
+    return redirect("vendor")
+    
