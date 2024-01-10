@@ -79,16 +79,17 @@
                       <tr id="over" class="clickable-row" data-href="{% url 'view_vendor_details' v.id %}">
              
                         <td>{{v.first_name}} {{v.last_name}}</td>
-                        <td>{{v.company_name}}</td>
+                        <td>{{v.phone}}</td>
+
                         <td>{{v.vendor_email}}</td>
-                        <td>{{v.vendor_wphone}}</td>
 
                         <td ><textarea class="bg-transparent text-white border-0" name="" id="" cols="45" rows="2">{{v.gst_treatment}}</textarea></td>
+                        <td>{{v.gst_number}}</td>
                         <td>{{v.status}}</td>
-                        {% if v.opening_bal_type == 'credit' %}
-                        <td>-{{v.opening_bal}}</td>
+                        {% if v.opening_balance_type == 'credit' %}
+                        <td>-{{v.opening_balance}}</td>
                         {% else %}
-                        <td>{{v.opening_bal}}</td>
+                        <td>{{v.opening_balance}}</td>
                         {% endif %}
                         <td></td>
                         <td><a href="{% url 'delete_vendor' v.id %}" onclick="alert('Do You Want to Delete?')"><i class="fas fa-trash text-danger text-center"></i></a></td>

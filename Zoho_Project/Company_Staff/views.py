@@ -4,7 +4,7 @@ from Register_Login.views import logout
 
 # Create your views here.
 from django.contrib.auth.models import User,auth
-from Company_Staff.models import Vendor,remarks_table,CustomerContactPerson
+from Company_Staff.models import Vendor, comments_table, doc_upload_table, mail_table,remarks_table,CustomerContactPerson
 from django.contrib.auth.decorators import login_required
 
 
@@ -297,4 +297,51 @@ def add_vendor(request):
     
 def cancel_vendor(request):
     return redirect("vendor")
+def sort_vendor_by_name(request):
+    company=CompanyDetails.objects.get(user=request.user)
+    user_id=request.user.id
+    udata=User.objects.get(id=user_id)
+    data=Vendor.objects.filter(user=udata).order_by('first_name')
+    return render(request,'vendor_list.html',{'data':data,'company':company})    
+
+def sort_vendor_by_amount(request):
+    company=CompanyDetails.objects.get(user=request.user)
+    user_id=request.user.id
+    udata=User.objects.get(id=user_id)
+    data=Vendor.objects.filter(user=udata).order_by('opening_bal')
+    return render(request,'vendor_list.html',{'data':data,'company':company})
+
+def view_vendor_active(request):
+    company=CompanyDetails.objects.get(user=request.user)
+    user_id=request.user.id
+    udata=User.objects.get(id=user_id)
+    data=Vendor.objects.filter(user=udata,status='Active').order_by('-id')
+    return render(request,'vendor_list.html',{'data':data,'company':company})
     
+def view_vendor_inactive(request):
+    company=CompanyDetails.objects.get(user=request.user)
+    user_id=request.user.id
+    udata=User.objects.get(id=user_id)
+    data=Vendor.objects.filter(user=udata,status='Inactive').order_by('-id')
+    return render(request,'vendor_list.html',{'data':data,'company':company})
+
+def delete_vendor(request,pk):
+    if comments_table.objects.filter(vendor=pk).exists():
+        user2=comments_table.objects.filter(vendor=pk)
+        user2.delete()
+    if mail_table.objects.filter(vendor=pk).exists():
+        user3=mail_table.objects.filter(vendor=pk)
+        user3.delete()
+    if doc_upload_table.objects.filter(vendor=pk).exists():
+        user4=doc_upload_table.objects.filter(vendor=pk)
+        user4.delete()
+    if CustomerContactPerson.objects.filter(vendor=pk).exists():
+        user5=CustomerContactPerson.objects.filter(vendor=pk)
+        user5.delete()
+    if remarks_table.objects.filter(vendor=pk).exists():
+        user6=remarks_table.objects.filter(vendor=pk)
+        user6.delete()
+    
+    user1=Vendor.objects.get(id=pk)
+    user1.delete()
+    return redirect("view_vendor_list")

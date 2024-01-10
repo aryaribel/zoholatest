@@ -104,4 +104,22 @@ class remarks_table(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE,null=True)
     vendor=models.ForeignKey(Vendor,on_delete=models.CASCADE,null=True)
     remarks=models.CharField(max_length=500)    
+class comments_table(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,null=True,default='')
+    vendor=models.ForeignKey(Vendor,on_delete=models.CASCADE,null=True)
+    comment=models.TextField(max_length=500)
 
+class mail_table(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,null=True,default='')
+    vendor=models.ForeignKey(Vendor,on_delete=models.CASCADE,null=True)
+    mail_from=models.TextField(max_length=300)
+    mail_to=models.TextField(max_length=300)
+    subject=models.TextField(max_length=250)
+    content=models.TextField(max_length=900)
+    mail_date=models.DateTimeField(auto_now_add=True)
+
+class doc_upload_table(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,null=True,default='')
+    vendor=models.ForeignKey(Vendor,on_delete=models.CASCADE,null=True)
+    title=models.TextField(max_length=200)
+    document=models.FileField(upload_to='doc/')
