@@ -349,3 +349,55 @@ def delete_vendor(request,pk):
     user1=Vendor.objects.get(id=pk)
     user1.delete()
     return redirect("view_vendor_list")
+
+def view_vendor_details(request,pk):
+    company=CompanyDetails.objects.get(user=request.user)
+    user_id=request.user.id
+    udata=User.objects.get(id=user_id)
+    vdata1=Vendor.objects.filter(user=udata)
+    vdata2=Vendor.objects.get(id=pk)
+    mdata=Vendor_mail_table.objects.filter(vendor=vdata2)
+    ddata=Vendor_doc_upload_table.objects.filter(user=udata,vendor=vdata2)
+    cmt_data=Vendor_comments_table.objects.filter(user=udata,vendor=vdata2)
+    contact_persons = CustomerContactPerson.objects.filter(user=udata,vendor=vdata2)
+
+    fname = vdata2.first_name
+    lname = vdata2.last_name
+    fullname = fname + ' ' + lname
+    v_email = vdata2.vendor_email
+    name_and_id = fullname +' '+ str(vdata2.id) 
+    id_and_name = str(vdata2.id) +' '+ fullname  
+
+    print(fname)
+    print(lname)
+    print(fullname)
+    print(v_email)
+    print(name_and_id)
+
+    vendor_credits = Vendor_Credits_Bills.objects.filter(user = udata,vendor_name = name_and_id)
+    expence = ExpenseE.objects.filter(user = udata,vendor_id = pk)
+    recurring_expense = Expense.objects.filter(vendor_id = pk)
+    purchase_ordr = Purchase_Order.objects.filter(user = udata,vendor_name = name_and_id)
+    paymnt_made = payment_made.objects.filter(user = udata,vendor_id = pk)
+    purchase_bill = PurchaseBills.objects.filter(user = udata,vendor_name = fullname,vendor_email = v_email)
+    recurring_bill = recurring_bills.objects.filter(user = udata,vendor_name = id_and_name)
+
+    context = {
+        'company':company,
+        'vdata':vdata1,
+        'vdata2':vdata2,
+        'mdata':mdata,
+        'ddata':ddata,
+        'cmt_data':cmt_data,
+        'contact_persons':contact_persons,
+        'vendor_credits':vendor_credits,
+        'expence':expence,
+        'recurring_expense':recurring_expense,
+        'purchase_ordr':purchase_ordr,
+        'paymnt_made':paymnt_made,
+        'purchase_bill':purchase_bill,
+        'recurring_bill':recurring_bill,
+
+    }
+
+    return render(request,'vendor_details.html',context)
