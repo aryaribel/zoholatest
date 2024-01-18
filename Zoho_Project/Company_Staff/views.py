@@ -186,7 +186,6 @@ def vendor(request):
         log_details= LoginDetails.objects.get(id=log_id)
         dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
         allmodules= ZohoModules.objects.get(company=dash_details,status='New')
-        # company=CompanyDetails.objects.get(user=request.user)
     return render(request,'zohomodules/create_vendor.html',{'details':dash_details,'allmodules': allmodules})   
 def view_vendor_list(request):
      if 'login_id' in request.session:
@@ -201,7 +200,7 @@ def view_vendor_list(request):
         data=Vendor.objects.filter(company=dash_details)
      return render(request,'zohomodules/vendor_list.html',{'details':dash_details,'allmodules': allmodules,'data':data}) 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def add_vendor(request):
     if 'login_id' in request.session:
         if request.session.has_key('login_id'):
@@ -213,8 +212,9 @@ def add_vendor(request):
         dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
         if request.method=="POST":
             vendor_data=Vendor()
+            vendor_data.login_details=log_details
             vendor_data.company=dash_details
-            vendor_data.salutation = request.POST.get('salutation')
+            vendor_data.title = request.POST.get('salutation')
             vendor_data.first_name=request.POST['first_name']
             vendor_data.last_name=request.POST['last_name']
             vendor_data.company_name=request.POST['company_name']
@@ -240,7 +240,7 @@ def add_vendor(request):
             vendor_data.source_of_supply=request.POST['source_supply']
             vendor_data.currency=request.POST['currency']
             vendor_data.opening_balance=request.POST['opening_bal']
-            vendor_data.payment_term=request.POST['payment_terms']
+            # vendor_data.payment_term=PaymentTerms.objects.get('')
 
            
             vendor_data.battention=request.POST['battention']
@@ -253,7 +253,7 @@ def add_vendor(request):
             vendor_data.bfax=request.POST['bfax']
 
             vendor_data.sattention=request.POST['sattention']
-            vendor_data.scountry=request.POST['scountry']
+            vendor_data.scountry=request.POST['s_country']
             vendor_data.saddress=request.POST['saddress']
             vendor_data.scity=request.POST['scity']
             vendor_data.sstate=request.POST['sstate']
@@ -284,8 +284,7 @@ def add_vendor(request):
             department =request.POST.getlist('department[]') 
             vdata=Vendor.objects.get(id=vendor_data.id)
             vendor=vdata
-            print("hi")
-            print(salutation)
+           
             if salutation != ['Select']:
                 if len(salutation)==len(first_name)==len(last_name)==len(email)==len(work_phone)==len(mobile)==len(skype_name_number)==len(designation)==len(department):
                     mapped2=zip(salutation,first_name,last_name,email,work_phone,mobile,skype_name_number,designation,department)
@@ -302,33 +301,67 @@ def add_vendor(request):
 def cancel_vendor(request):
     return redirect("vendor")
 def sort_vendor_by_name(request):
-    company=CompanyDetails.objects.get(user=request.user)
-    user_id=request.user.id
-    udata=User.objects.get(id=user_id)
-    data=Vendor.objects.filter(user=udata).order_by('first_name')
-    return render(request,'vendor_list.html',{'data':data,'company':company})    
+    if 'login_id' in request.session:
+        if request.session.has_key('login_id'):
+            log_id = request.session['login_id']
+           
+        else:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+  
+        data=Vendor.objects.filter(login_details=log_details).order_by('first_name')
+        return render(request,'zohomodules/vendor_list.html',{'data':data,'dash_details':dash_details})
+    else:
+            return redirect('/')    
 
 def sort_vendor_by_amount(request):
-    company=CompanyDetails.objects.get(user=request.user)
-    user_id=request.user.id
-    udata=User.objects.get(id=user_id)
-    data=Vendor.objects.filter(user=udata).order_by('opening_bal')
-    return render(request,'vendor_list.html',{'data':data,'company':company})
+    if 'login_id' in request.session:
+        if request.session.has_key('login_id'):
+            log_id = request.session['login_id']
+           
+        else:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+   
+        data=Vendor.objects.filter(login_details=log_details).order_by('opening_balance')
+        return render(request,'zohomodules/vendor_list.html',{'data':data,'dash_details':dash_details})
+    else:
+         return redirect('/') 
 
 def view_vendor_active(request):
-    company=CompanyDetails.objects.get(user=request.user)
-    user_id=request.user.id
-    udata=User.objects.get(id=user_id)
-    data=Vendor.objects.filter(user=udata,status='Active').order_by('-id')
-    return render(request,'vendor_list.html',{'data':data,'company':company})
+    if 'login_id' in request.session:
+        if request.session.has_key('login_id'):
+            log_id = request.session['login_id']
+           
+        else:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+   
+        data=Vendor.objects.filter(login_details=log_details,vendor_status='Active').order_by('-id')
+        return render(request,'zohomodules/vendor_list.html',{'data':data,'dash_details':dash_details})
+    else:
+         return redirect('/') 
+
+    
     
 def view_vendor_inactive(request):
-    company=CompanyDetails.objects.get(user=request.user)
-    user_id=request.user.id
-    udata=User.objects.get(id=user_id)
-    data=Vendor.objects.filter(user=udata,status='Inactive').order_by('-id')
-    return render(request,'vendor_list.html',{'data':data,'company':company})
-
+    if 'login_id' in request.session:
+        if request.session.has_key('login_id'):
+            log_id = request.session['login_id']
+           
+        else:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+   
+        data=Vendor.objects.filter(login_details=log_details,vendor_status='Inactive').order_by('-id')
+        return render(request,'zohomodules/vendor_list.html',{'data':data,'dash_details':dash_details})
+    else:
+         return redirect('/') 
+    
 def delete_vendor(request,pk):
     if Vendor_comments_table.objects.filter(vendor=pk).exists():
         user2=Vendor_comments_table.objects.filter(vendor=pk)
@@ -374,13 +407,13 @@ def view_vendor_details(request,pk):
     print(v_email)
     print(name_and_id)
 
-    vendor_credits = Vendor_Credits_Bills.objects.filter(user = udata,vendor_name = name_and_id)
-    expence = ExpenseE.objects.filter(user = udata,vendor_id = pk)
-    recurring_expense = Expense.objects.filter(vendor_id = pk)
-    purchase_ordr = Purchase_Order.objects.filter(user = udata,vendor_name = name_and_id)
-    paymnt_made = payment_made.objects.filter(user = udata,vendor_id = pk)
-    purchase_bill = PurchaseBills.objects.filter(user = udata,vendor_name = fullname,vendor_email = v_email)
-    recurring_bill = recurring_bills.objects.filter(user = udata,vendor_name = id_and_name)
+    # vendor_credits = Vendor_Credits_Bills.objects.filter(user = udata,vendor_name = name_and_id)
+    # expence = ExpenseE.objects.filter(user = udata,vendor_id = pk)
+    # recurring_expense = Expense.objects.filter(vendor_id = pk)
+    # purchase_ordr = Purchase_Order.objects.filter(user = udata,vendor_name = name_and_id)
+    # paymnt_made = payment_made.objects.filter(user = udata,vendor_id = pk)
+    # purchase_bill = PurchaseBills.objects.filter(user = udata,vendor_name = fullname,vendor_email = v_email)
+    # recurring_bill = recurring_bills.objects.filter(user = udata,vendor_name = id_and_name)
 
     context = {
         'company':company,
@@ -390,13 +423,13 @@ def view_vendor_details(request,pk):
         'ddata':ddata,
         'cmt_data':cmt_data,
         'contact_persons':contact_persons,
-        'vendor_credits':vendor_credits,
-        'expence':expence,
-        'recurring_expense':recurring_expense,
-        'purchase_ordr':purchase_ordr,
-        'paymnt_made':paymnt_made,
-        'purchase_bill':purchase_bill,
-        'recurring_bill':recurring_bill,
+        # 'vendor_credits':vendor_credits,
+        # 'expence':expence,
+        # 'recurring_expense':recurring_expense,
+        # 'purchase_ordr':purchase_ordr,
+        # 'paymnt_made':paymnt_made,
+        # 'purchase_bill':purchase_bill,
+        # 'recurring_bill':recurring_bill,
 
     }
 
