@@ -273,7 +273,7 @@ def add_vendor(request):
 
     #  ...........................adding multiple rows of table to model  ........................................................  
         
-            salutation =request.POST.getlist('salutation[]')
+            title =request.POST.getlist('salutation[]')
             first_name =request.POST.getlist('first_name[]')
             last_name =request.POST.getlist('last_name[]')
             email =request.POST.getlist('email[]')
@@ -285,13 +285,13 @@ def add_vendor(request):
             vdata=Vendor.objects.get(id=vendor_data.id)
             vendor=vdata
            
-            if salutation != ['Select']:
-                if len(salutation)==len(first_name)==len(last_name)==len(email)==len(work_phone)==len(mobile)==len(skype_name_number)==len(designation)==len(department):
-                    mapped2=zip(salutation,first_name,last_name,email,work_phone,mobile,skype_name_number,designation,department)
+            if title != ['Select']:
+                if len(title)==len(first_name)==len(last_name)==len(email)==len(work_phone)==len(mobile)==len(skype_name_number)==len(designation)==len(department):
+                    mapped2=zip(title,first_name,last_name,email,work_phone,mobile,skype_name_number,designation,department)
                     mapped2=list(mapped2)
                     print(mapped2)
                     for ele in mapped2:
-                        created = CustomerContactPerson.objects.get_or_create(salutation=ele[0],first_name=ele[1],last_name=ele[2],email=ele[3],
+                        created = CustomerContactPerson.objects.get_or_create(title=ele[0],first_name=ele[1],last_name=ele[2],email=ele[3],
                                 work_phone=ele[4],mobile=ele[5],skype_number=ele[6],designation=ele[7],department=ele[8],company=dash_details,vendor=vendor)
                 
         
