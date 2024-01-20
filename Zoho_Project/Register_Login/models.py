@@ -56,6 +56,11 @@ class CompanyDetails(models.Model):
     reg_action = models.CharField(max_length=255,null=True,blank=True,default='self')
     position = models.CharField(max_length=255,null=True,blank=True,default='company')
 
+class Company_Payment_Term(models.Model):
+    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE,null=True,blank=True)
+    term_name =models.CharField(max_length=100,null=True,blank=True,default='')
+    days =models.IntegerField(null=True,default=0)
+    status =models.CharField(max_length=200,null=True,blank=True,default='')
 
 class StaffDetails(models.Model):
     login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE,null=True,blank=True)

@@ -357,12 +357,12 @@
                      
                     <div class=" col-sm-12 col-md-3 col-lg-3">
                         <select name="payment_terms" id="PLACE" class="form-control bg-light text-dark">
-                            <option value="NET 60" >NET 60</option>
-                            <option value="NET 45" >NET 45</option>                          
-                            <option value="NET 30">NET 30</option>
                             <option value="Due on Receipt" selected>Due on Receipt</option>
-                            <option >
-                              </option>
+
+                            {% for pay_terms in comp_payment_terms %}
+                            <option value="{{pay_terms.id}}" >{{pay_terms.term_name}}</option>
+                           {% endfor %}
+                            
                         </select>
 
                     </div>

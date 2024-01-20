@@ -183,22 +183,49 @@ def vendor(request):
            
         else:
             return redirect('/')
+    
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+        if log_details.user_type=='Staff':
+            staff_details=StaffDetails.objects.get(login_details=log_details)
+            dash_details = CompanyDetails.objects.get(id=staff_details.company.id)
+
+        else:    
+            dash_details = CompanyDetails.objects.get(login_details=log_details)
         allmodules= ZohoModules.objects.get(company=dash_details,status='New')
-    return render(request,'zohomodules/create_vendor.html',{'details':dash_details,'allmodules': allmodules})   
+        comp_payment_terms=Company_Payment_Term.objects.filter(company=dash_details)
+        if log_details.user_type=='Staff':
+
+            return render(request,'zohomodules/create_vendor.html',{'details':dash_details,'allmodules': allmodules,'comp_payment_terms':comp_payment_terms}) 
+        else:
+            return render(request,'zohomodules/create_vendor.html',{'details':dash_details,'allmodules': allmodules,'comp_payment_terms':comp_payment_terms}) 
+    else:
+        return redirect('/')
+
 def view_vendor_list(request):
-     if 'login_id' in request.session:
+    if 'login_id' in request.session:
         if request.session.has_key('login_id'):
             log_id = request.session['login_id']
            
         else:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+        if log_details.user_type=='Staff':
+            staff_details=StaffDetails.objects.get(login_details=log_details)
+            dash_details = CompanyDetails.objects.get(id=staff_details.company.id)
+
+        else:    
+            dash_details = CompanyDetails.objects.get(login_details=log_details)
         allmodules= ZohoModules.objects.get(company=dash_details,status='New')       
         data=Vendor.objects.filter(company=dash_details)
-     return render(request,'zohomodules/vendor_list.html',{'details':dash_details,'allmodules': allmodules,'data':data}) 
+        if log_details.user_type=='Staff':
+            return render(request,'zohomodules/vendor_list.html',{'details':dash_details,'allmodules': allmodules,'data':data}) 
+
+        else:
+            return render(request,'zohomodules/vendor_list.html',{'details':dash_details,'allmodules': allmodules,'data':data}) 
+
+    else:
+        return redirect('/')
+
 
 # @login_required(login_url='login')
 def add_vendor(request):
@@ -209,7 +236,12 @@ def add_vendor(request):
         else:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+        if log_details.user_type=='Staff':
+            staff_details=StaffDetails.objects.get(login_details=log_details)
+            dash_details = CompanyDetails.objects.get(id=staff_details.company.id)
+
+        else:    
+            dash_details = CompanyDetails.objects.get(login_details=log_details)
         if request.method=="POST":
             vendor_data=Vendor()
             vendor_data.login_details=log_details
@@ -240,7 +272,7 @@ def add_vendor(request):
             vendor_data.source_of_supply=request.POST['source_supply']
             vendor_data.currency=request.POST['currency']
             vendor_data.opening_balance=request.POST['opening_bal']
-            # vendor_data.payment_term=PaymentTerms.objects.get('')
+            vendor_data.payment_term=Company_Payment_Term.objects.get(id=request.POST['payment_terms'])
 
            
             vendor_data.battention=request.POST['battention']
@@ -292,7 +324,7 @@ def add_vendor(request):
                     print(mapped2)
                     for ele in mapped2:
                         created = CustomerContactPerson.objects.get_or_create(title=ele[0],first_name=ele[1],last_name=ele[2],email=ele[3],
-                                work_phone=ele[4],mobile=ele[5],skype_number=ele[6],designation=ele[7],department=ele[8],company=dash_details,vendor=vendor)
+                                work_phone=ele[4],mobile=ele[5],skype_name_number=ele[6],designation=ele[7],department=ele[8],company=dash_details,vendor=vendor)
                 
         
                     

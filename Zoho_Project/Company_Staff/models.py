@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-from Register_Login.models import LoginDetails,CompanyDetails,PaymentTerms
+from Register_Login.models import LoginDetails,CompanyDetails,Company_Payment_Term
 from django.contrib.auth.models import User,auth
 
 #---------------- models for zoho modules--------------------
@@ -29,7 +29,7 @@ class Vendor(models.Model):
     current_balance = models.DecimalField(max_digits=10, decimal_places=2,default=0.00)
     credit_limit = models.DecimalField(max_digits=10, decimal_places=2,default=0.00)
     source_of_supply = models.CharField(max_length=255,default='')
-    payment_term = models.ForeignKey(PaymentTerms, on_delete=models.SET_NULL,null=True,blank=True)
+    payment_term = models.ForeignKey(Company_Payment_Term, on_delete=models.SET_NULL,null=True,blank=True)
     billing_attention = models.CharField(max_length=255,default='')
     billing_address = models.TextField()
     billing_city = models.CharField(max_length=255,default='')
