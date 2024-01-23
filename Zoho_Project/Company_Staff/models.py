@@ -50,30 +50,11 @@ class Vendor(models.Model):
     vendor_status = models.CharField(max_length=10,default='')
     company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE,null=True,blank=True)
     login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE,null=True,blank=True)
-    battention=models.CharField(max_length=100,default='')
-    bstreet=models.CharField(max_length=100,default='')
-    bcountry=models.CharField(max_length=100,default='')
-    baddress=models.CharField(max_length=300,default='')
-    bcity=models.CharField(max_length=100,default='')
-    bstate=models.CharField(max_length=100,default='')
-    bpin=models.CharField(max_length=100,default='')
-    bzip=models.CharField(max_length=100,default='')
-    bphone=models.CharField(max_length=100,default='')
-    bfax=models.CharField(max_length=100,default='')
-    sattention=models.CharField(max_length=100,default='')
-    sstreet=models.CharField(max_length=100,default='')
-    scountry=models.CharField(max_length=100,default='')
-    saddress=models.CharField(max_length=300,default='')
-    scity=models.CharField(max_length=100,default='')
-    sstate=models.CharField(max_length=100,default='')
-    szip=models.CharField(max_length=100,default='')
-    spin=models.CharField(max_length=100,default='')
-    sphone=models.CharField(max_length=100,default='')
-    sfax=models.CharField(max_length=100,default='')
+    
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-class CustomerContactPerson(models.Model):
+class VendorContactPerson(models.Model):
     company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)

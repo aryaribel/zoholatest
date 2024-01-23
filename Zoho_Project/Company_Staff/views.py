@@ -4,7 +4,7 @@ from Register_Login.views import logout
 
 # Create your views here.
 from django.contrib.auth.models import User,auth
-from Company_Staff.models import Vendor, Vendor_comments_table, Vendor_doc_upload_table, Vendor_mail_table,Vendor_remarks_table,CustomerContactPerson
+from Company_Staff.models import Vendor, Vendor_comments_table, Vendor_doc_upload_table, Vendor_mail_table,Vendor_remarks_table,VendorContactPerson
 from django.contrib.auth.decorators import login_required
 
 
@@ -275,23 +275,23 @@ def add_vendor(request):
             vendor_data.payment_term=Company_Payment_Term.objects.get(id=request.POST['payment_terms'])
 
            
-            vendor_data.battention=request.POST['battention']
-            vendor_data.bcountry=request.POST['bcountry']
-            vendor_data.baddress=request.POST['baddress']
-            vendor_data.bcity=request.POST['bcity']
-            vendor_data.bstate=request.POST['bstate']
-            vendor_data.bzip=request.POST['bzip']
-            vendor_data.bphone=request.POST['bphone']
-            vendor_data.bfax=request.POST['bfax']
+            vendor_data.billing_attention=request.POST['battention']
+            vendor_data.billing_country=request.POST['bcountry']
+            vendor_data.billing_address=request.POST['baddress']
+            vendor_data.billing_city=request.POST['bcity']
+            vendor_data.billing_state=request.POST['bstate']
+            vendor_data.billing_pin_code=request.POST['bzip']
+            vendor_data.billing_phone=request.POST['bphone']
+            vendor_data.billing_fax=request.POST['bfax']
 
-            vendor_data.sattention=request.POST['sattention']
-            vendor_data.scountry=request.POST['s_country']
-            vendor_data.saddress=request.POST['saddress']
-            vendor_data.scity=request.POST['scity']
-            vendor_data.sstate=request.POST['sstate']
-            vendor_data.szip=request.POST['szip']
-            vendor_data.sphone=request.POST['sphone']
-            vendor_data.sfax=request.POST['sfax']
+            vendor_data.shipping_attention=request.POST['sattention']
+            vendor_data.shipping_country=request.POST['s_country']
+            vendor_data.shipping_address=request.POST['saddress']
+            vendor_data.shipping_city=request.POST['scity']
+            vendor_data.shipping_state=request.POST['sstate']
+            vendor_data.shipping_pin_code=request.POST['szip']
+            vendor_data.shipping_phone=request.POST['sphone']
+            vendor_data.shipping_fax=request.POST['sfax']
             vendor_data.save()
     # .......................................................adding to remaks table.....................
             vdata=Vendor.objects.get(id=vendor_data.id)
@@ -323,7 +323,7 @@ def add_vendor(request):
                     mapped2=list(mapped2)
                     print(mapped2)
                     for ele in mapped2:
-                        created = CustomerContactPerson.objects.get_or_create(title=ele[0],first_name=ele[1],last_name=ele[2],email=ele[3],
+                        created = VendorContactPerson.objects.get_or_create(title=ele[0],first_name=ele[1],last_name=ele[2],email=ele[3],
                                 work_phone=ele[4],mobile=ele[5],skype_name_number=ele[6],designation=ele[7],department=ele[8],company=dash_details,vendor=vendor)
                 
         
@@ -404,8 +404,8 @@ def delete_vendor(request,pk):
     if Vendor_doc_upload_table.objects.filter(vendor=pk).exists():
         user4=Vendor_doc_upload_table.objects.filter(vendor=pk)
         user4.delete()
-    if CustomerContactPerson.objects.filter(vendor=pk).exists():
-        user5=CustomerContactPerson.objects.filter(vendor=pk)
+    if VendorContactPerson.objects.filter(vendor=pk).exists():
+        user5=VendorContactPerson.objects.filter(vendor=pk)
         user5.delete()
     if Vendor_remarks_table.objects.filter(vendor=pk).exists():
         user6=Vendor_remarks_table.objects.filter(vendor=pk)
@@ -416,28 +416,28 @@ def delete_vendor(request,pk):
     return redirect("view_vendor_list")
 
 def view_vendor_details(request,pk):
-    company=CompanyDetails.objects.get(user=request.user)
-    user_id=request.user.id
-    udata=User.objects.get(id=user_id)
-    vdata1=Vendor.objects.filter(user=udata)
-    vdata2=Vendor.objects.get(id=pk)
-    mdata=Vendor_mail_table.objects.filter(vendor=vdata2)
-    ddata=Vendor_doc_upload_table.objects.filter(user=udata,vendor=vdata2)
-    cmt_data=Vendor_comments_table.objects.filter(user=udata,vendor=vdata2)
-    contact_persons = CustomerContactPerson.objects.filter(user=udata,vendor=vdata2)
+    # company=CompanyDetails.objects.get(user=request.user)
+    # user_id=request.user.id
+    # udata=User.objects.get(id=user_id)
+    # vdata1=Vendor.objects.filter(user=udata)
+    # vdata2=Vendor.objects.get(id=pk)
+    # mdata=Vendor_mail_table.objects.filter(vendor=vdata2)
+    # ddata=Vendor_doc_upload_table.objects.filter(user=udata,vendor=vdata2)
+    # cmt_data=Vendor_comments_table.objects.filter(user=udata,vendor=vdata2)
+    # contact_persons = VendorContactPerson.objects.filter(user=udata,vendor=vdata2)
 
-    fname = vdata2.first_name
-    lname = vdata2.last_name
-    fullname = fname + ' ' + lname
-    v_email = vdata2.vendor_email
-    name_and_id = fullname +' '+ str(vdata2.id) 
-    id_and_name = str(vdata2.id) +' '+ fullname  
+    # fname = vdata2.first_name
+    # lname = vdata2.last_name
+    # fullname = fname + ' ' + lname
+    # v_email = vdata2.vendor_email
+    # name_and_id = fullname +' '+ str(vdata2.id) 
+    # id_and_name = str(vdata2.id) +' '+ fullname  
 
-    print(fname)
-    print(lname)
-    print(fullname)
-    print(v_email)
-    print(name_and_id)
+    # print(fname)
+    # print(lname)
+    # print(fullname)
+    # print(v_email)
+    # print(name_and_id)
 
     # vendor_credits = Vendor_Credits_Bills.objects.filter(user = udata,vendor_name = name_and_id)
     # expence = ExpenseE.objects.filter(user = udata,vendor_id = pk)
@@ -447,14 +447,14 @@ def view_vendor_details(request,pk):
     # purchase_bill = PurchaseBills.objects.filter(user = udata,vendor_name = fullname,vendor_email = v_email)
     # recurring_bill = recurring_bills.objects.filter(user = udata,vendor_name = id_and_name)
 
-    context = {
-        'company':company,
-        'vdata':vdata1,
-        'vdata2':vdata2,
-        'mdata':mdata,
-        'ddata':ddata,
-        'cmt_data':cmt_data,
-        'contact_persons':contact_persons,
+    # context = {
+    #     'company':company,
+    #     'vdata':vdata1,
+    #     'vdata2':vdata2,
+    #     'mdata':mdata,
+    #     'ddata':ddata,
+    #     'cmt_data':cmt_data,
+    #     'contact_persons':contact_persons,
         # 'vendor_credits':vendor_credits,
         # 'expence':expence,
         # 'recurring_expense':recurring_expense,
@@ -463,6 +463,6 @@ def view_vendor_details(request,pk):
         # 'purchase_bill':purchase_bill,
         # 'recurring_bill':recurring_bill,
 
-    }
+    # }
 
-    return render(request,'vendor_details.html',context)
+    return render(request,'zohomodules/vendor_detailsnew.html')
