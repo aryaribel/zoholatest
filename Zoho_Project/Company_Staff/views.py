@@ -415,7 +415,7 @@ def delete_vendor(request,pk):
     user1.delete()
     return redirect("view_vendor_list")
 
-def view_vendor_details(request,pk):
+# def view_vendor_details(request,pk):
     # company=CompanyDetails.objects.get(user=request.user)
     # user_id=request.user.id
     # udata=User.objects.get(id=user_id)
@@ -465,4 +465,35 @@ def view_vendor_details(request,pk):
 
     # }
 
-    return render(request,'zohomodules/vendor_detailsnew.html')
+    # return render(request,'zohomodules/vendor_detailsnew.html')
+
+def view_vendor_details(request,pk):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+    log_details= LoginDetails.objects.get(id=log_id)
+    if log_details.user_type =='Company':
+        dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+        # pay=payroll_employee.objects.filter(company=dash_details)
+        allmodules= ZohoModules.objects.get(company=dash_details,status='New')
+        # p=payroll_employee.objects.get(id=pk)
+        # comment_data=comment.objects.filter(login_details=log_details,employee=pk)
+        # history=employee_history.objects.filter(login_details=log_details,employee=pk)
+    if log_details.user_type =='Staff':
+        dash_details = StaffDetails.objects.get(login_details=log_details)
+        # pay=payroll_employee.objects.filter(company=dash_details.company)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        # p=payroll_employee.objects.get(id=pk)
+        # comment_data=comment.objects.filter(login_details=log_details,employee=pk)
+        # history=employee_history.objects.all()
+    content = {
+                'details': dash_details,
+                # 'pay':pay,
+                # 'p':p,
+                'allmodules': allmodules,
+                # 'comment':comment_data,
+                # 'history':history,
+                # 'log_id':log_details,
+        }
+    return render(request,'zohomodules/vendor_detailsnew.html',content)
