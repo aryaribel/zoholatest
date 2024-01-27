@@ -32,5 +32,6 @@ urlpatterns = [
     path('sort_vendor_by_amount',views.sort_vendor_by_amount,name='sort_vendor_by_amount'),
     path('delete_vendor/<int:pk>',views.delete_vendor,name='delete_vendor'),
     path('view_vendor_details/<int:pk>',views.view_vendor_details,name='view_vendor_details'),
+    path('import_vendor_excel',views.import_vendor_excel,name='import_vendor_excel'),
 
 ]

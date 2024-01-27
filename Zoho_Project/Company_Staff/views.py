@@ -497,3 +497,49 @@ def view_vendor_details(request,pk):
                 # 'log_id':log_details,
         }
     return render(request,'zohomodules/vendor_detailsnew.html',content)
+
+def import_vendor_excel(request):
+    print(1)
+    print('hello')
+    if request.method == 'POST' :
+        if 'login_id' in request.session:
+            log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        if log_details.user_type == 'Staff':
+            dash_details = StaffDetails.objects.get(login_details=log_details)
+            if 'empfile' in request.FILES:
+                excel_bill = request.FILES['empfile']
+                excel_b = load_workbook(excel_bill)
+                eb = excel_b['Sheet1']
+                for row_number1 in range(2, eb.max_row + 1):
+                    billsheet = [eb.cell(row=row_number1, column=col_num).value for col_num in range(1, eb.max_column + 1)]
+                    payroll=payroll_employee(title=billsheet[0],first_name=billsheet[1],last_name=billsheet[2],alias=billsheet[3],joindate=datetime.date.fromisoformat(billsheet[4]),salary_type=billsheet[6],salary=billsheet[9],
+                                emp_number=billsheet[10],designation=billsheet[11],location=billsheet[12], gender=billsheet[13],dob=datetime.date.fromisoformat(billsheet[14]),blood=billsheet[15],parent=billsheet[16],spouse_name=billsheet[17],workhr=billsheet[8],
+                                amountperhr = billsheet[7], address=billsheet[19],permanent_address=billsheet[18],Phone=billsheet[20],emergency_phone=billsheet[21], email=billsheet[22],Income_tax_no=billsheet[32],Aadhar=billsheet[33],
+                                UAN=billsheet[34],PFN=billsheet[35],PRAN=billsheet[36],isTDS=billsheet[29],TDS_percentage=billsheet[30],salaryrange = billsheet[5],acc_no=billsheet[24],IFSC=billsheet[25],bank_name=billsheet[26],branch=billsheet[27],transaction_type=billsheet[28],company=dash_details.company,login_details=log_details)
+                    payroll.save()
+                    history=employee_history(company=dash_details.company,login_details=log_details, employee=payroll,Action='IMPORTED')
+                    history.save()
+                    messages.warning(request,'file imported')
+                    return redirect('view_vendor_list')
+        if log_details.user_type == 'Company':
+            dash_details = CompanyDetails.objects.get(login_details=log_details)
+            if 'empfile' in request.FILES:
+                excel_bill = request.FILES['empfile']
+                excel_b = load_workbook(excel_bill)
+                eb = excel_b['Sheet1']
+                for row_number1 in range(2, eb.max_row + 1):
+                    billsheet = [eb.cell(row=row_number1, column=col_num).value for col_num in range(1, eb.max_column + 1)]
+                    payroll=payroll_employee(title=billsheet[0],first_name=billsheet[1],last_name=billsheet[2],alias=billsheet[3],joindate=billsheet[4],salary_type=billsheet[6],salary=billsheet[9],
+                                emp_number=billsheet[10],designation=billsheet[11],location=billsheet[12], gender=billsheet[13],dob=billsheet[14],blood=billsheet[15],parent=billsheet[16],spouse_name=billsheet[17],workhr=billsheet[8],
+                                amountperhr = billsheet[7], address=billsheet[19],permanent_address=billsheet[18],Phone=billsheet[20],emergency_phone=billsheet[21], email=billsheet[22],Income_tax_no=billsheet[32],Aadhar=billsheet[33],
+                                UAN=billsheet[34],PFN=billsheet[35],PRAN=billsheet[36],isTDS=billsheet[29],TDS_percentage=billsheet[30],salaryrange = billsheet[5],acc_no=billsheet[24],IFSC=billsheet[25],bank_name=billsheet[26],branch=billsheet[27],transaction_type=billsheet[28],company=dash_details,login_details=log_details)
+                    payroll.save()
+                    history=employee_history(company=dash_details,login_details=log_details, employee=payroll,Action='IMPORTED')
+                    history.save()
+                    messages.warning(request,'file imported')
+                    return redirect('view_vendor_list')
+    messages.error(request,'File upload Failed!11')
+    return redirect('view_vendor_list')
