@@ -140,9 +140,8 @@
       </div>
       <div class="modal-body" style="background: rgb(32, 35, 37);">
         <div class="card">
-          <form action="import_vendor_excel" method="post" class="needs-validation" enctype="multipart/form-data"  id="excelForm">
+          <form action="{% url 'import_vendor_excel' %}" method="post" class="needs-validation" enctype="multipart/form-data"  id="excelForm">
             {% csrf_token %}
-            <input type="hidden" name="csrfmiddlewaretoken" value="Yge9KoaaSRL7cGO2JQj0zt4K70Ky5NuhTC09TACXvpvYQgsYSGwOs77Oea65Rmgl">
             <div class="form-group mt-3" style="margin-left: 2vh;">
               <label for="file" style="font-size: medium;">Choose Excel File for Employees - </label> <br><br>
               <input type="file" class="form-control-file" id="empfile" name="empfile" accept=".xls,.xlsx"><br>
