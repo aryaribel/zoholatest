@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
@@ -26,59 +25,50 @@
   <div class="container-fluid text-light">
       <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
-           {% if log_id.user_type == 'Staff' %} <li class="breadcrumb-item"><a href="" class="text-warning-emphasis">Dashboard</a></li>{% endif %}
-           {% if log_id.user_type == 'Company' %} <li class="breadcrumb-item"><a href="" class="text-warning-emphasis">Dashboard</a></li>{% endif %}
-            <li class="breadcrumb-item"><a href="" class="">Payroll_list</a></li>
+           {% if log_id.user_type == 'Staff' %} <li class="breadcrumb-item"><a href="{% url 'staff_dashboard' %}" class="text-warning-emphasis">Dashboard</a></li>{% endif %}
+           {% if log_id.user_type == 'Company' %} <li class="breadcrumb-item"><a href="{% url 'company_dashboard' %}" class="text-warning-emphasis">Dashboard</a></li>{% endif %}
+            <li class="breadcrumb-item"><a href="{% url 'view_vendor_list' %}" class="text-warning-emphasis">vendor_list</a></li>
             <li class="breadcrumb-item" aria-current="page">Over view</li>
           </ol>
       </nav>
       <div class="row mt-5">
-          <div class="col-md-12">
+          <div class="col-sm-12 col-lg-12 flex-column">
               <div class="card mb-3 bg-black shadow p-3 mb-5 rounded" style="max-width: 1200px;">
                 <div class="row mt-4">
-                  <div class="col-4">
+                  <div class="col-sm flex-column">
                     <div class="row">
-                      <div class="col-sm-5">
+                      <div class="row">
                         <a class="text-white" style="font-size: 1.5rem;">Vendors</a>
                       </div>
                       <div class="row">
-                      <div class="col-lg-3 col-sm-3 ">
-                        <div class="dropdown">
-                        <a class="btn text-center px-4 pt-1 mt-1 btn-outline-warning" id="sortbutton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button" >
-                          <i  class="fas fa-sort "></i>
-                        </a>
-                        <div class="dropdown-menu m-1">
-                          <a class="dropdown-item" href="">All</a>
-                          <a class="dropdown-item" onclick="sortTable()">Employee Name</a>
-                          <a class="dropdown-item" onclick="sortTablebal()">Employee Salary</a>
+                        <div class="col-sm-3 col-lg-7">
+                          <input type="text" id="search" class="form-control bg-light text-dark " placeholder="Search.." autocomplete="off">
                         </div>
-                        </div>
-                      </div>
-                      <div class="col-md-6 col-lg-6 col-sm-6">      
-                        <div class="dropdown">
-                          <a class="btn text-center pt-1 mt-1 btn-outline-warning" id="filterbutton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button" >
-                            <i  class="fas fa-filter m-1"></i>
+                        <div class="col-sm-4 col-lg-5 " style="text-align: right; float: right;" >
+                          <a class="btn text-center  btn-outline-warning btn-sm" id="sortbutton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button" >
+                            <i  class="fas fa-sort "></i>
                           </a>
+                          
+
                           <div class="dropdown-menu m-1">
-                            <a class="dropdown-item" onclick="applyFilter('All')">All</a>
-                            <a class="dropdown-item" onclick="applyFilter('Active')">Active</a>
-                            <a class="dropdown-item" onclick="applyFilter('Inactive')">Inactive</a>
+                            <a class="dropdown-item" href="{% url 'view_vendor_list' %}">All</a>
+                            <a class="dropdown-item" href="{% url 'sort_vendor_by_name' %}">Name</a>
+                            <a class="dropdown-item" href="{% url 'sort_vendor_by_amount' %}">Amount</a>
                           </div>
-                        </div>      
-                      </div>  
-                      <div class="col" >              
-                        <a class="btn btn btn-outline-warning " style="text-align: right;" href=""><i class="fa fa-plus "></i></a>
-                      </div>
-
-                    </div>
-
-                      </div>
-                      <div class="row">
-                        <div class="col-md-12 col-sm-12 col-lg-12">
-                          <input type="text" id="search" class="form-control bg-light text-dark mt-2 " placeholder="Search.." autocomplete="off">
+                          <a class="btn text-center btn-outline-warning btn-sm" id="filterbutton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button" >
+                            <i  class="fas fa-filter "></i>
+                          </a>
+                          <div class="dropdown-menu m-1 ">
+                            <a class="dropdown-item" href="{% url 'view_vendor_list' %}">All</a>
+                            <a class="dropdown-item" href="{% url 'view_vendor_active' %}">Active</a>
+                            <a class="dropdown-item" href="{% url 'view_vendor_inactive' %}">Inactive</a>
+                          </div>
+                          <a class="btn btn btn-outline-warning btn-sm " style="text-align: right;" href="{% url 'vendor' %}"><i class="fa fa-plus "></i></a>
                         </div>
+                      </div> 
+                      </div>
                       
-                    </div>
+                  
                     <div class="row">
                       <div class="table-responsive scrollable-table" >
                         <table class="table  text-white" id="myTable">
@@ -109,46 +99,52 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-md-3" >
-                          <a class="btn bg-warning text-light" ><i class="fas fa-eye"></i> Overview</a>
+                        <div class="col-md-2" >
+                          <a class="btn bg-warning text-light btn-sm" ><i class="fas fa-eye"></i> Overview</a>
                         </div>
-                        <div class="col-md-9 col-lg-9 col-sm-9" style="text-align: right; ">
+                        <div class="col-md-10 col-lg-10 col-sm-12" style="text-align: right; ">
                           <a href=""  class=" text-dark" >
-                            <button class="btn btn-outline-warning"  title="Edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-outline-warning btn-sm"  title="Edit"><i class="fas fa-edit"></i></button>
                           </a>
                           <a  class="text-dark"  onclick="exportToPDF()" id="pdflink">
-                            <button class="btn btn-outline-warning"  title="Pdf"><i class="fa-solid fa-file-pdf"></i></button>
+                            <button class="btn btn-outline-warning btn-sm"  title="Pdf"><i class="fa-solid fa-file-pdf"></i></button>
                           </a>
                           <a class=" text-dark"  onclick="printSelectedArea()"  >
-                            <button class="btn btn-outline-warning"  title="Print"> <i class="fas fa-print"></i> </button> 
+                            <button class="btn btn-outline-warning btn-sm"  title="Print"> <i class="fas fa-print"></i> </button> 
                           </a>
-                          <a class="btn btn-outline-warning" href="" data-toggle="modal" data-target="#commentModal" data-toggle="tooltip" title="comment">
+                          <a class="btn btn-outline-warning btn-sm" href="" data-toggle="modal" data-target="#commentModal" data-toggle="tooltip" title="comment">
                             <i class="far fa-comment"></i>
                           </a>
-                          <!-- {% if p.uploaded_file %}
+                          {% if p.uploaded_file %}
                           <a class="text-dark" href="{{ p.uploaded_file.url }}" download>
-                            <button class="btn btn-outline-warning" title="download"><i class="fas fa-download"></i></button>
+                            <button class="btn btn-outline-warning btn-sm" title="download"><i class="fas fa-download"></i></button>
                         </a>
-                          {% else %} -->
-                          <a class="btn btn-outline-warning" href="" data-toggle="modal" title="upload" data-target="#commentModal3" data-toggle="tooltip" title="comment">
+                          {% else %}
+                          <a class="btn btn-outline-warning btn-sm" href="" data-toggle="modal" title="upload" data-target="#commentModal3" data-toggle="tooltip" title="comment">
                             <i class="fa-solid fa-upload"></i>
                           </a>
                           {% endif %}
                         
                           <a href="" class="  text-dark" >
-                            <button class="btn btn-outline-warning"  title="Delete"><i class="fas fa-trash-alt"></i></button>
+                            <button class="btn btn-outline-warning btn-sm"  title="Delete"><i class="fas fa-trash-alt"></i></button>
                           </a>
-                          <input id="file-input" type="file" name="file" style="display:none;" onchange="uploadFile()">
-                          <a class="btn btn-outline-warning" href="" id="sts">{{p.status}}</a>
-                          <a class="btn btn-outline-warning" href="" data-toggle="modal" data-target="#commentModal2" data-toggle="tooltip" title="comment">
+                          <a class="btn btn-outline-warning btn-sm" href="" id="sts">{{p.status}}</a>
+                          <a class="btn btn-outline-warning btn-sm" href="" data-toggle="modal" data-target="#commentModal2" data-toggle="tooltip" title="history">
                             <i class="fa-solid fa-clock-rotate-left"></i>
                           </a>
+                            <a class="btn btn-outline-warning dropdown-toggle btn-sm" href="#" role="button" title="share" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="fa-solid fa-share-nodes"></i>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                              <a class="dropdown-item" href="#" data-toggle="modal" title="upload" data-target="#commentModal4" data-toggle="tooltip" title="comment">Mail</a>
+                              <a class="dropdown-item" href="#" onclick="shareViaWhatsApp()">whatsapp</a>
+                            </div>
                         </div>
                         
                       </div><br>
             
                       <div id="printdiv" style="color:black;" >
-                        <div class="row " id="div-to-pdf" style="background-color: #c4c1c1fd; margin-left:1px; margin-right: 1rem; ">
+                        <div class="row " id="div-to-pdf" style="background-color: #acaaaafd; margin-left:1px; margin-right: 1rem; ">
                           <br>
                           <div class="row">
                             <div class="col-3 mt-3" >
@@ -170,16 +166,16 @@
                               <hr>
                             </h2>
                           </div>
-                          <div class="gen-info col-6  " style="padding-left: 3rem;  ">
+                          <div class="gen-info col-sm " style="padding-left: 3rem;  ">
                             <div class="row mt-1">
                               <div class="col-2"></div>
                               <div class="col-6" style="text-align: center; ">
                                 <a href=" " >
-                                  {% if p.image != '' %}
-                                  <img class="img-fluid rounded-circle" style="border: 2px rgb(199, 119, 0) solid;" src="{{p.image.url}}" alt="profile pic"  name="img" >
+                                  <!-- {% if p.image != '' %}
+                                  <img class="img-fluid" style="border: 2px rgb(199, 119, 0) solid;" src="{{p.image.url}}" alt="profile pic"  name="img" >
                                   {% else %}
                                   <img class="img-fluid" alt="profile pic" name="img">
-                                  {% endif %}
+                                  {% endif %} -->
                                   <br><br>
                                   <p class="text-dark fs-5 b" >{{p.title}} &nbsp;{{p.first_name}} &nbsp;{{p.last_name}}
                                   </p>
@@ -193,65 +189,36 @@
                               </div>
                             </div>
                             <div class="row mt-2">
-                              <div class="col-5"><p  for="">Phone Number:</p></div>
+                              <div class="col-5"><p  for="">Work Phone :</p></div>
                               <div class="col-7">
                                 <p class="bold " style="max-width: 15rem;word-wrap: break-word;">{{p.Phone}}</p>
                               </div>
                             </div>
-                            {% if p.emergency_phone %}
+                            <!-- {% if p.emergency_phone %}
                               <div class="row mt-2">
                                 <div class="col-5"><p  for="">Emergency Number :</p></div>
                                 <div class="col-7">
                                   <p class="bold " style="max-width: 15rem;word-wrap: break-word;">{{p.emergency_phone}}</p>
                                 </div>
                               </div>
-                            {% endif %}
+                            {% endif %} -->
                             <div class="row mt-2">
-                              <div class="col-5"><p  for="">Location :</p></div>
+                              <div class="col-5"><p  for="">Mobile Phone :</p></div>
                               <div class="col-7">
                                 <p class="bold" style="max-width: 15rem;word-wrap: break-word;">{{p.location}}</p>
                               </div>
                             </div>
-                            <div class="h3 mt-4 text-black">Personal info
-                              <hr>
+                            <div class="h3 mt-4 text-black">More info
+                              <hr style="color: orange;">
                             </div>
                             <div class="row mt-2">
-                              <div class="col-5"><p  for="">Gender :</p></div>
+                              <div class="col-5"><p  for="">Website :</p></div>
                               <div class="col-7">
                                 <p class="bold " style="max-width: 15rem;word-wrap: break-word;">{{p.gender}}</p>
                               </div>
                             </div>
-                            <div class="row mt-2">
-                              <div class="col-5"><p  for="">Age :</p></div>
-                              <div class="col-7">
-                                <p class="bold " style="max-width: 15rem;word-wrap: break-word;">{{p.age}}</p>
-                              </div>
-                            </div>
-                            <div class="row mt-2">
-                              <div class="col-5"><p  for="">Blood Group :</p></div>
-                              <div class="col-7">
-                                <p class="bold " style="max-width: 15rem;word-wrap: break-word;">{{p.blood}}</p>
-                              </div>
-                            </div>
-                            <div class="row mt-2">
-                              <div class="col-5"><p  for="">Date of Birth :</p></div>
-                              <div class="col-7">
-                                <p class="bold " style="max-width: 15rem;word-wrap: break-word;">{{p.dob}}</p>
-                              </div>
-                            </div>
-                            <div class="row mt-1">
-                              <div class="col-5"><p  for="">Permanent Address:</p></div>
-                              <div class="col-7">
-                                <p class="bold " style="max-width: 15rem;word-wrap: break-word;">{{p.permanent_address}}</p>
-                              </div>
-                            </div>
-                            <div class="row mt-1">
-                              <div class="col-5"><p  for="">Temporary Address:</p></div>
-                              <div class="col-7">
-                                <p class="bold " style="max-width: 15rem;word-wrap: break-word;">{{p.address}}</p>
-                              </div>
-                            </div>
-                            {% if p.parent %}
+                           
+                            <!-- {% if p.parent %}
                               <div class="row mt-1">
                                 <div class="col-5"><p for="">Parent Name :</p></div>
                                 <div class="col-7">
@@ -266,18 +233,18 @@
                                   <p class="bold " style="max-width: 12rem;word-wrap: break-word;">{{p.spouse_name}}</p>
                                 </div>
                               </div>
-                            {% endif %}
+                            {% endif %} -->
                           </div>
-                          <div class="p-info col-6 ">
-                            <div class="card " style="background-color:#6d6c6b ; padding-left: 1rem; padding-top: 1rem;">
+                          <div class="p-info col-sm ">
+                            <div class="card " style="background-color:#383838 ; color:white; padding-left: 1rem; padding-top: 1rem;">
                               <div class="h3 mt-4 " style="margin-right: 2vh; color:white">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Salary Info
-                                <hr>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;General Information
+                                <hr style="color: orange;">
                               </div>
                                                         
                               <div class="row mt-2">
                                 <div class="col-1"></div>
-                                <div class="col-5"><p for="">Employee Salary :</p></div>
+                                <div class="col-5"><p for="">GST Treatment :</p></div>
                                 <div class="col-6">
                                   <p class="bold">{{p.salary}}</p>
                                 </div>
@@ -285,7 +252,7 @@
                                                         
                               <div class="row mt-2">
                                 <div class="col-1"></div>
-                                <div class="col-5"><p for="">Salary Date Range :</p></div>
+                                <div class="col-5"><p for="">GST Number :</p></div>
                                 <div class="col-6">
                                   <p class="bold">{{p.salaryrange}}</p>
                                 </div>
@@ -293,34 +260,58 @@
                                                     
                               <div class="row mt-2">
                                 <div class="col-1"></div>
-                                <div class="col-5"><p for="">Salary Type :</p></div>
+                                <div class="col-5"><p for="">PAN Number:</p></div>
                                 <div class="col-6">
-                                  {% if p.salary_type == 'Variable' %}
+                                  <!-- {% if p.salary_type == 'Variable' %}
                                     <p class="bold">Time Based</p>
                                   {% else %}
                                     <p class="bold">{{p.salary_type}}</p>
-                                  {% endif %}
+                                  {% endif %} -->
+                                </div>
+                              </div>
+
+
+                              <div class="row mt-2">
+                                <div class="col-1"></div>
+                                <div class="col-5"><p for="">Source Of Supply :</p></div>
+                                <div class="col-6">
+                                  <p class="bold">{{p.salaryrange}}</p>
+                                </div>
+                              </div>
+
+                              <div class="row mt-2">
+                                <div class="col-1"></div>
+                                <div class="col-5"><p for="">Currency :</p></div>
+                                <div class="col-6">
+                                  <p class="bold">{{p.salaryrange}}</p>
+                                </div>
+                              </div>
+
+                              <div class="row mt-2">
+                                <div class="col-1"></div>
+                                <div class="col-5"><p for="">Opening Balance Type  :</p></div>
+                                <div class="col-6">
+                                  <p class="bold">{{p.salaryrange}}</p>
+                                </div>
+                              </div>
+
+                              <div class="row mt-2">
+                                <div class="col-1"></div>
+                                <div class="col-5"><p for="">Opening Balance Amount  :</p></div>
+                                <div class="col-6">
+                                  <p class="bold">{{p.salaryrange}}</p>
+                                </div>
+                              </div>
+                              <div class="row mt-2">
+                                <div class="col-1"></div>
+                                <div class="col-5"><p for="">Payment Terms :</p></div>
+                                <div class="col-6">
+                                  <p class="bold">{{p.salaryrange}}</p>
                                 </div>
                               </div>
               
-                              {% if p.salary_type == 'Variable' %}
-                                <div class="row mt-2">
-                                  <div class="col-1"></div>
-                                  <div class="col-5"><p for="">Amount per Hour :</p></div>
-                                  <div class="col-6">
-                                    <p class="bold">{{p.amountperhr}}</p>
-                                  </div>
-                                </div>
-                                                      
-                                <div class="row mt-2">
-                                  <div class="col-1"></div>
-                                  <div class="col-5"><p for="">Total Work Hours :</p></div>
-                                  <div class="col-6">
-                                    <p class="bold">{{p.workhr}}</p>
-                                  </div>
-                                </div>
-                              {% endif %}
-              
+<!--                             
+                                {% if isTDS %}
                               <div class="row mt-2">
                                 <div class="col-1"></div>
                                 <div class="col-5"><p for="">TDS Applicable :</p></div>
@@ -329,7 +320,6 @@
                                 </div>
                               </div>
               
-                              {% if p.isTDS != 'No' %}
                                 <div class="row mt-2">
                                   <div class="col-1"></div>
                                   <div class="col-5"><p for="">TDS Amount :</p></div>
@@ -337,99 +327,85 @@
                                     <p class="bold">{{p.TDS}}</p>
                                   </div>
                                 </div>
+                              {% endif %}  -->
+                              <!-- {% if p.acc_no %} 
+                              <div class="h3 mt-4 text-light " style="margin-right: 2vh;">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bank Details
+                                <hr style="color: orange;">
+                              </div>
+                              {% if p.acc_no %}   <div class="row mt-2">
+                                <div class="col-1"></div>
+                                <div class="col-5"><p for="">ACC Number :</p></div>
+                                <div class="col-6">
+                                     <p class="bold">{{p.acc_no}}</p>
+                                </div>
+                              </div>
+                              {% endif %}
+                              {% if p.IFSC %}<div class="row mt-2">
+                                <div class="col-1"></div>
+                                <div class="col-5"><p for="">IFSC:</p></div>
+                                <div class="col-6">
+                                  <p class="bold">{{p.IFSC}}</p>
+                                </div>
+                              </div>{% endif %}
+
+                              {% if p.bank_name %}<div class="row mt-2">
+                                <div class="col-1"></div>
+                                <div class="col-5"><p for="">BANK :</p></div>
+                                <div class="col-6">
+                                   <p class="bold">{{p.bank_name}}</p>
+                                </div>
+                              </div>
+                              {% endif %}
+                              {% if p.branch %} <div class="row mt-2">
+                                <div class="col-1"></div>
+                                <div class="col-5"><p for="">Branch :</p></div>
+                                <div class="col-6">
+                                  <p class="bold">{{p.branch}}</p>
+                                </div>
+                              </div>
+                              {% endif %}
                               {% endif %}
               
                               <div class="h3 mt-4 text-light " style="margin-right: 2vh;">
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Statutary Info
-                                <hr>
+                                <hr style="color: orange;">
                               </div>
                                                         
-                              <div class="row mt-2">
+                               {% if p.Income_tax_no %}  <div class="row mt-2">
                                 <div class="col-1"></div>
                                 <div class="col-5"><p for="">Income Tax Number :</p></div>
                                 <div class="col-6">
-                                  <p class="bold">{{p.ITN}}</p>
+                                  <p class="bold">{{p.Income_tax_no}}</p>
                                 </div>
-                              </div>
+                              </div> {% endif %} -->
                                                     
-                              <div class="row mt-2">
-                                <div class="col-1"></div>
-                                <div class="col-5"><p for="">Aadhar Number :</p></div>
-                                <div class="col-6">
-                                  <p class="bold">{{p.Aadhar}}</p>
-                                </div>
-                              </div>
+                            
                                                     
-                              <div class="row mt-2">
+                              {% if p.UAN %} <div class="row mt-2">
                                 <div class="col-1"></div>
                                 <div class="col-5"><p for="">Universal Account No :</p></div>
                                 <div class="col-6">
                                   <p class="bold">{{p.UAN}}</p>
                                 </div>
-                              </div>
+                              </div> {% endif %}
                                                         
-                              <div class="row mt-2">
+                              {% if p.PRAN %} <div class="row mt-2">
                                 <div class="col-1"></div>
                                 <div class="col-5"><p for="">PR Account No :</p></div>
                                 <div class="col-6">
                                   <p class="bold">{{p.PRAN}}</p>
                                 </div>
                               </div>
-                                                                            
-                              <div class="row mt-2">
+                              {% endif %}          
+                              {% if p.PFN %}  <div class="row mt-2">
                                 <div class="col-1"></div>
                                 <div class="col-5"><p for="">PF Account No:</p></div>
                                 <div class="col-6">
                                   <p class="bold">{{p.PFN}}</p>
                                 </div>
                               </div>
-              
-                              {% for bank in b %}
-                                <div class="h3 mt-4 text-white" style="margin-right: 2vh;">
-                                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bank Info
-                                  <hr>
-                                </div>
-                                                                                              
-                                <div class="row mt-2">
-                                    <div class="col-1"></div>
-                                    <div class="col-5"><p for="">Bank Name:</p></div>
-                                    <div class="col-6">
-                                      <p class="bold">{{bank.bank_name}}</p>
-                                    </div>
-                                </div>   
-                                                                                           
-                                <div class="row mt-2">
-                                  <div class="col-1"></div>
-                                  <div class="col-5"><p for="">Account No:</p></div>
-                                  <div class="col-6">
-                                    <p class="bold">{{bank.acc_no}}</p>
-                                  </div>
-                                </div>
-                                                                                              
-                                <div class="row mt-2">
-                                  <div class="col-1"></div>
-                                  <div class="col-5"><p for="">IFSC Code:</p></div>
-                                  <div class="col-6">
-                                    <p class="bold">{{bank.IFSC}}</p>
-                                  </div>
-                                </div>
-                                                                                              
-                                <div class="row mt-2">
-                                  <div class="col-1"></div>
-                                  <div class="col-5"><p for="">Bank Branch:</p></div>
-                                  <div class="col-6">
-                                    <p class="bold">{{bank.branch}}</p>
-                                  </div>
-                                </div>
-                                                                                              
-                                <div class="row mt-2">
-                                  <div class="col-1"></div>
-                                  <div class="col-5"><p for="">Transaction Type:</p></div>
-                                  <div class="col-6">
-                                    <p class="bold">{{bank.transaction_type}}</p>
-                                  </div>
-                                </div>
-                              {% endfor %}
+                              {% endif %}
                             </div><br>
                           </div>
                         </div>       
@@ -512,14 +488,14 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                {% for i in history %}
+                                <!-- {% for i in history %}
                                 <tr class="table-row">
                                   <td>{{forloop.counter}}</td>
                                   <td>{{i.Date}}</td>
                                   <td>{{i.Action}}</td>
                                   <td>{{i.login_details.first_name}} {{i.login_details.Last_name}}</td>
                                 </tr>
-                                {% endfor %}
+                                {% endfor %} -->
                               </tbody>
                             </table>
                           </div>
@@ -550,6 +526,29 @@
                           <div class="modal-footer">
                             <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-outline-warning">Save</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <!-------------------------------------------------------------------------------------------------------->
+                  <div class="modal fade" id="commentModal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"  aria-hidden="true" style="margin-top: 8vh;">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content" style="background-color: #3b3b3b;">
+                        <div class="modal-header">
+                          <h3 class="modal-title text-light" id="exampleModalLabel">Share details</h3>
+                          <button type="button" class="btn close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" style="font-size: x-large;">&times;</span>
+                          </button>
+                        </div>
+                        <form action="" method="POST" enctype="multipart/form-data">
+                          {% csrf_token %}
+                          <div class="modal-body">
+                            <input type="email" name="email" required style="color:white;" class="form-control">
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-outline-warning">Share</button>
                           </div>
                         </form>
                       </div>
@@ -755,13 +754,13 @@
                                     <hr>
                                   </div>
                                                             
-                                  <div class="row mt-2">
+                              {% if p.Income_tax_no %}    <div class="row mt-2">
                                     <div class="col-1"></div>
                                     <div class="col-5"><p for="">Income Tax Number :</p></div>
                                     <div class="col-6">
-                                      <p class="bold">{{p.ITN}}</p>
+                                      <p class="bold">{{p.Income_tax_no}}</p>
                                     </div>
-                                  </div>
+                                  </div>{% endif  %}
                                                         
                                   <div class="row mt-2">
                                     <div class="col-1"></div>
@@ -771,76 +770,34 @@
                                     </div>
                                   </div>
                                                         
-                                  <div class="row mt-2">
+                               {% if p.UAN %}   <div class="row mt-2">
                                     <div class="col-1"></div>
                                     <div class="col-5"><p for="">Universal Account No :</p></div>
                                     <div class="col-6">
                                       <p class="bold">{{p.UAN}}</p>
                                     </div>
                                   </div>
+                                  {% endif  %}
                                                             
-                                  <div class="row mt-2">
+                                 {% if p.PRAN %} <div class="row mt-2">
                                     <div class="col-1"></div>
                                     <div class="col-5"><p for="">PR Account No :</p></div>
                                     <div class="col-6">
                                       <p class="bold">{{p.PRAN}}</p>
                                     </div>
                                   </div>
+                                  {% endif  %}
                                                                                 
-                                  <div class="row mt-2">
+                                 {% if p.PFN %} <div class="row mt-2">
                                     <div class="col-1"></div>
                                     <div class="col-5"><p for="">PF Account No:</p></div>
                                     <div class="col-6">
                                       <p class="bold">{{p.PFN}}</p>
                                     </div>
                                   </div>
+                                  {% endif %}
                   
-                                  {% for bank in b %}
-                                    <div class="h3 mt-4 text-white" style="margin-right: 2vh;">
-                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bank Info
-                                      <hr>
-                                    </div>
-                                                                                                  
-                                    <div class="row mt-2">
-                                        <div class="col-1"></div>
-                                        <div class="col-5"><p for="">Bank Name:</p></div>
-                                        <div class="col-6">
-                                          <p class="bold">{{bank.bank_name}}</p>
-                                        </div>
-                                    </div>   
-                                                                                               
-                                    <div class="row mt-2">
-                                      <div class="col-1"></div>
-                                      <div class="col-5"><p for="">Account No:</p></div>
-                                      <div class="col-6">
-                                        <p class="bold">{{bank.acc_no}}</p>
-                                      </div>
-                                    </div>
-                                                                                                  
-                                    <div class="row mt-2">
-                                      <div class="col-1"></div>
-                                      <div class="col-5"><p for="">IFSC Code:</p></div>
-                                      <div class="col-6">
-                                        <p class="bold">{{bank.IFSC}}</p>
-                                      </div>
-                                    </div>
-                                                                                                  
-                                    <div class="row mt-2">
-                                      <div class="col-1"></div>
-                                      <div class="col-5"><p for="">Bank Branch:</p></div>
-                                      <div class="col-6">
-                                        <p class="bold">{{bank.branch}}</p>
-                                      </div>
-                                    </div>
-                                                                                                  
-                                    <div class="row mt-2">
-                                      <div class="col-1"></div>
-                                      <div class="col-5"><p for="">Transaction Type:</p></div>
-                                      <div class="col-6">
-                                        <p class="bold">{{bank.transaction_type}}</p>
-                                      </div>
-                                    </div>
-                                  {% endfor %}
+                                 
                                 </div><br>
                               </div>
                             </div>    
@@ -855,7 +812,18 @@
           </div>
 </div>
       
-        
+<script>
+  function shareViaWhatsApp() {
+    // Replace 'Hello, this is a shared message!' with your desired message
+    var message = encodeURIComponent(window.location.href);
+
+    // Create the WhatsApp share link
+    var whatsappLink = 'https://wa.me/?text=' + message;
+
+    // Open the link in a new tab/window
+    window.open(whatsappLink, '_blank');
+  }
+</script>  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 <script>
   function exportToPDF(){

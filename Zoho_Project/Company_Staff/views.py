@@ -501,47 +501,46 @@ def view_vendor_details(request,pk):
     return render(request,'zohomodules/vendor_detailsnew.html',content)
 
 def import_vendor_excel(request):
-    print(1)
-    print('hello')
-    if request.method == 'POST' :
-        if 'login_id' in request.session:
+   if 'login_id' in request.session:
+        if request.session.has_key('login_id'):
             log_id = request.session['login_id']
-        if 'login_id' not in request.session:
+           
+        else:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        if log_details.user_type == 'Staff':
-            dash_details = StaffDetails.objects.get(login_details=log_details)
-            if 'empfile' in request.FILES:
-                excel_bill = request.FILES['empfile']
-                excel_b = load_workbook(excel_bill)
-                eb = excel_b['Sheet1']
-                for row_number1 in range(2, eb.max_row + 1):
-                    billsheet = [eb.cell(row=row_number1, column=col_num).value for col_num in range(1, eb.max_column + 1)]
-                    payroll=payroll_employee(title=billsheet[0],first_name=billsheet[1],last_name=billsheet[2],alias=billsheet[3],joindate=datetime.date.fromisoformat(billsheet[4]),salary_type=billsheet[6],salary=billsheet[9],
-                                emp_number=billsheet[10],designation=billsheet[11],location=billsheet[12], gender=billsheet[13],dob=datetime.date.fromisoformat(billsheet[14]),blood=billsheet[15],parent=billsheet[16],spouse_name=billsheet[17],workhr=billsheet[8],
-                                amountperhr = billsheet[7], address=billsheet[19],permanent_address=billsheet[18],Phone=billsheet[20],emergency_phone=billsheet[21], email=billsheet[22],Income_tax_no=billsheet[32],Aadhar=billsheet[33],
-                                UAN=billsheet[34],PFN=billsheet[35],PRAN=billsheet[36],isTDS=billsheet[29],TDS_percentage=billsheet[30],salaryrange = billsheet[5],acc_no=billsheet[24],IFSC=billsheet[25],bank_name=billsheet[26],branch=billsheet[27],transaction_type=billsheet[28],company=dash_details.company,login_details=log_details)
-                    payroll.save()
-                    history=employee_history(company=dash_details.company,login_details=log_details, employee=payroll,Action='IMPORTED')
-                    history.save()
-                    messages.warning(request,'file imported')
-                    return redirect('view_vendor_list')
-        if log_details.user_type == 'Company':
+
+        if log_details.user_type=='Staff':
+            staff_details=StaffDetails.objects.get(login_details=log_details)
+            dash_details = CompanyDetails.objects.get(id=staff_details.company.id)
+            
+
+        else:    
             dash_details = CompanyDetails.objects.get(login_details=log_details)
+        if request.method == 'POST' :
+       
             if 'empfile' in request.FILES:
                 excel_bill = request.FILES['empfile']
                 excel_b = load_workbook(excel_bill)
                 eb = excel_b['Sheet1']
-                for row_number1 in range(2, eb.max_row + 1):
-                    billsheet = [eb.cell(row=row_number1, column=col_num).value for col_num in range(1, eb.max_column + 1)]
-                    payroll=payroll_employee(title=billsheet[0],first_name=billsheet[1],last_name=billsheet[2],alias=billsheet[3],joindate=billsheet[4],salary_type=billsheet[6],salary=billsheet[9],
-                                emp_number=billsheet[10],designation=billsheet[11],location=billsheet[12], gender=billsheet[13],dob=billsheet[14],blood=billsheet[15],parent=billsheet[16],spouse_name=billsheet[17],workhr=billsheet[8],
-                                amountperhr = billsheet[7], address=billsheet[19],permanent_address=billsheet[18],Phone=billsheet[20],emergency_phone=billsheet[21], email=billsheet[22],Income_tax_no=billsheet[32],Aadhar=billsheet[33],
-                                UAN=billsheet[34],PFN=billsheet[35],PRAN=billsheet[36],isTDS=billsheet[29],TDS_percentage=billsheet[30],salaryrange = billsheet[5],acc_no=billsheet[24],IFSC=billsheet[25],bank_name=billsheet[26],branch=billsheet[27],transaction_type=billsheet[28],company=dash_details,login_details=log_details)
-                    payroll.save()
-                    history=employee_history(company=dash_details,login_details=log_details, employee=payroll,Action='IMPORTED')
-                    history.save()
-                    messages.warning(request,'file imported')
-                    return redirect('view_vendor_list')
-    messages.error(request,'File upload Failed!11')
-    return redirect('view_vendor_list')
+                for row_number1 in range(1, eb.max_row + 1):
+                    vendorsheet = [eb.cell(row=row_number1, column=col_num).value for col_num in range(1, eb.max_column + 1)]
+                    Vendor_object=Vendor(title=vendorsheet[0],first_name=vendorsheet[1],last_name=vendorsheet[2],company_name=vendorsheet[3],vendor_email=vendorsheet[4],phone=vendorsheet[5],mobile=vendorsheet[6],skype_name_number=vendorsheet[7],designation=vendorsheet[8],department=vendorsheet[9],website=vendorsheet[10],
+                                         gst_treatment=vendorsheet[11],source_of_supply=vendorsheet[12],currency=vendorsheet[13],opening_balance_type=vendorsheet[14],
+                                         opening_balance=vendorsheet[15],payment_term=vendorsheet[16],billing_attention=vendorsheet[17],billing_address=vendorsheet[18],
+                                         billing_city=vendorsheet[19],billing_state=vendorsheet[20],billing_country=vendorsheet[21],billing_pin_code=vendorsheet[22],
+                                         billing_phone=vendorsheet[23],billing_fax=vendorsheet[24],shipping_attention=vendorsheet[25],shipping_address=vendorsheet[26],shipping_city=vendorsheet[27],
+                                         shipping_state=vendorsheet[28],shipping_country=vendorsheet[29],shipping_pin_code=vendorsheet[30],
+                                         shipping_phone=vendorsheet[31], shipping_fax=vendorsheet[32], remarks=vendorsheet[33],company=dash_details,login_details=log_details)
+                    Vendor_object.save()
+
+    
+                   
+                messages.warning(request,'file imported')
+                return redirect('view_vendor_list')    
+
+    
+            messages.error(request,'File upload Failed!11')
+            return redirect('view_vendor_list')
+        else:
+            messages.error(request,'File upload Failed!11')
+            return redirect('view_vendor_list')
