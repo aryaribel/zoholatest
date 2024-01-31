@@ -23,7 +23,7 @@
                     {% if log_details.user_type == 'Staff' %} <li class="breadcrumb-item"><a href="{% url 'staff_dashboard' %}" class="text-warning-emphasis">Dashboard</a></li>{% endif %}
                     {% if log_details.user_type == 'Company' %} <li class="breadcrumb-item"><a href="{% url 'company_dashboard' %}" class="text-warning-emphasis">Dashboard</a></li>{% endif %}
                      <li class="breadcrumb-item"><a href="{% url 'view_vendor_list' %}" class="text-warning-emphasis">vendor_list</a></li>
-                     <li class="breadcrumb-item" aria-current="page">CREATE vendor</li>
+                     <li class="breadcrumb-item" aria-current="page">Edit vendor</li>
             </nav>
 
             <div class="card mb-3 bg-black shadow p-3 mb-5 rounded" style="max-width: 1200px;">
@@ -31,9 +31,9 @@
 
      
           <!-- <div  style="height: 600px;overflow-y: scroll;"> -->
-             <h3  class="mb-5  text-white " style="font-size: 2rem;">New Vendor</h3><br>     
+             <!-- <h3  class="mb-5  text-white " style="font-size: 2rem;">New Vendor</h3><br>      -->
       
-             <form  method="post" action="{% url 'add_vendor' %}"  enctype="multipart/form-data" class="">
+             <form  method="post" action="{% url 'do_vendor_edit' p.id %}"  enctype="multipart/form-data" class="">
               {% csrf_token %}
               
               

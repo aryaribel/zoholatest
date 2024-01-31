@@ -197,9 +197,9 @@ def vendor(request):
         comp_payment_terms=Company_Payment_Term.objects.filter(company=dash_details)
         if log_details.user_type=='Staff':
 
-            return render(request,'zohomodules/create_vendor.html',{'details':dash_details,'allmodules': allmodules,'comp_payment_terms':comp_payment_terms}) 
+            return render(request,'zohomodules/create_vendor.html',{'details':dash_details,'allmodules': allmodules,'comp_payment_terms':comp_payment_terms,'log_details':log_details}) 
         else:
-            return render(request,'zohomodules/create_vendor.html',{'details':dash_details,'allmodules': allmodules,'comp_payment_terms':comp_payment_terms}) 
+            return render(request,'zohomodules/create_vendor.html',{'details':dash_details,'allmodules': allmodules,'comp_payment_terms':comp_payment_terms,'log_details':log_details}) 
     else:
         return redirect('/')
 
@@ -220,10 +220,10 @@ def view_vendor_list(request):
         allmodules= ZohoModules.objects.get(company=dash_details,status='New')       
         data=Vendor.objects.filter(company=dash_details)
         if log_details.user_type=='Staff':
-            return render(request,'zohomodules/vendor_list.html',{'details':dash_details,'allmodules': allmodules,'data':data}) 
+            return render(request,'zohomodules/vendor_list.html',{'details':dash_details,'allmodules': allmodules,'data':data,'log_details':log_details}) 
 
         else:
-            return render(request,'zohomodules/vendor_list.html',{'details':dash_details,'allmodules': allmodules,'data':data}) 
+            return render(request,'zohomodules/vendor_list.html',{'details':dash_details,'allmodules': allmodules,'data':data,'log_details':log_details}) 
 
     else:
         return redirect('/')
@@ -417,86 +417,34 @@ def delete_vendor(request,pk):
     user1.delete()
     return redirect("view_vendor_list")
 
-# def view_vendor_details(request,pk):
-    # company=CompanyDetails.objects.get(user=request.user)
-    # user_id=request.user.id
-    # udata=User.objects.get(id=user_id)
-    # vdata1=Vendor.objects.filter(user=udata)
-    # vdata2=Vendor.objects.get(id=pk)
-    # mdata=Vendor_mail_table.objects.filter(vendor=vdata2)
-    # ddata=Vendor_doc_upload_table.objects.filter(user=udata,vendor=vdata2)
-    # cmt_data=Vendor_comments_table.objects.filter(user=udata,vendor=vdata2)
-    # contact_persons = VendorContactPerson.objects.filter(user=udata,vendor=vdata2)
 
-    # fname = vdata2.first_name
-    # lname = vdata2.last_name
-    # fullname = fname + ' ' + lname
-    # v_email = vdata2.vendor_email
-    # name_and_id = fullname +' '+ str(vdata2.id) 
-    # id_and_name = str(vdata2.id) +' '+ fullname  
-
-    # print(fname)
-    # print(lname)
-    # print(fullname)
-    # print(v_email)
-    # print(name_and_id)
-
-    # vendor_credits = Vendor_Credits_Bills.objects.filter(user = udata,vendor_name = name_and_id)
-    # expence = ExpenseE.objects.filter(user = udata,vendor_id = pk)
-    # recurring_expense = Expense.objects.filter(vendor_id = pk)
-    # purchase_ordr = Purchase_Order.objects.filter(user = udata,vendor_name = name_and_id)
-    # paymnt_made = payment_made.objects.filter(user = udata,vendor_id = pk)
-    # purchase_bill = PurchaseBills.objects.filter(user = udata,vendor_name = fullname,vendor_email = v_email)
-    # recurring_bill = recurring_bills.objects.filter(user = udata,vendor_name = id_and_name)
-
-    # context = {
-    #     'company':company,
-    #     'vdata':vdata1,
-    #     'vdata2':vdata2,
-    #     'mdata':mdata,
-    #     'ddata':ddata,
-    #     'cmt_data':cmt_data,
-    #     'contact_persons':contact_persons,
-        # 'vendor_credits':vendor_credits,
-        # 'expence':expence,
-        # 'recurring_expense':recurring_expense,
-        # 'purchase_ordr':purchase_ordr,
-        # 'paymnt_made':paymnt_made,
-        # 'purchase_bill':purchase_bill,
-        # 'recurring_bill':recurring_bill,
-
-    # }
-
-    # return render(request,'zohomodules/vendor_detailsnew.html')
 
 def view_vendor_details(request,pk):
     if 'login_id' in request.session:
-        log_id = request.session['login_id']
-        if 'login_id' not in request.session:
+        if request.session.has_key('login_id'):
+            log_id = request.session['login_id']
+           
+        else:
             return redirect('/')
-    log_details= LoginDetails.objects.get(id=log_id)
-    if log_details.user_type =='Company':
-        dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
-        # pay=payroll_employee.objects.filter(company=dash_details)
+        log_details= LoginDetails.objects.get(id=log_id)
+        if log_details.user_type=='Staff':
+            staff_details=StaffDetails.objects.get(login_details=log_details)
+            dash_details = CompanyDetails.objects.get(id=staff_details.company.id)
+
+        else:    
+            dash_details = CompanyDetails.objects.get(login_details=log_details)
         allmodules= ZohoModules.objects.get(company=dash_details,status='New')
-        # p=payroll_employee.objects.get(id=pk)
-        # comment_data=comment.objects.filter(login_details=log_details,employee=pk)
-        # history=employee_history.objects.filter(login_details=log_details,employee=pk)
-    if log_details.user_type =='Staff':
-        dash_details = StaffDetails.objects.get(login_details=log_details)
-        # pay=payroll_employee.objects.filter(company=dash_details.company)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        # p=payroll_employee.objects.get(id=pk)
-        # comment_data=comment.objects.filter(login_details=log_details,employee=pk)
-        # history=employee_history.objects.all()
+
+        vendor_obj=Vendor.objects.get(id=pk)
+
+    
+    
     content = {
                 'details': dash_details,
-                # 'pay':pay,
-                # 'p':p,
+               
                 'allmodules': allmodules,
-                # 'comment':comment_data,
-                # 'history':history,
-                # 'log_id':log_details,
+                'vendor_obj':vendor_obj,
+              'log_details':log_details,
         }
     return render(request,'zohomodules/vendor_detailsnew.html',content)
 
@@ -544,3 +492,338 @@ def import_vendor_excel(request):
         else:
             messages.error(request,'File upload Failed!11')
             return redirect('view_vendor_list')
+        
+def Vendor_edit(request,pk):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+    log_details= LoginDetails.objects.get(id=log_id)
+    if log_details.user_type == 'Company':
+        dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details,status='New')
+        vendor_obj=Vendor.objects.get(id=pk)
+    if log_details.user_type == 'Staff':
+        dash_details = StaffDetails.objects.get(login_details=log_details)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        vendor_obj=Vendor.objects.get(id=pk)
+        
+    content = {
+            'details': dash_details,
+            'allmodules': allmodules,
+            'vendor_obj':vendor_obj,
+            'log_details':log_details,
+    }
+    return render(request,'zohomodules/edit_vendor.html',content)
+
+def do_vendor_edit(request,pk):
+    if request.method=='POST':
+        if 'login_id' in request.session:
+            log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        if log_details.user_type =='Company':
+            company_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)    
+            title=request.POST['title']
+            fname=request.POST['fname']
+            lname=request.POST['lname']
+            alias=request.POST['alias']
+            joindate=request.POST['joindate']
+            salarydate=request.POST['salary']
+            saltype=request.POST['saltype']
+            if (saltype == 'Fixed' or saltype =='Temporary'):
+                salary=request.POST['fsalary']
+            else:
+                salary=request.POST['vsalary']
+            image=request.FILES.get('file')
+            amountperhr=request.POST['amnthr']
+            workhr=request.POST['hours']
+            empnum=request.POST['empnum']
+            result_set2 = payroll_employee.objects.filter(company=company_details,emp_number=empnum).exclude(id=pk)
+            if result_set2:
+                messages.error(request,'employee number  already exists')
+                return redirect('payroll_employee_edit',pk)
+            designation = request.POST['designation']
+            location=request.POST['location']
+            gender=request.POST['gender']
+            dob=request.POST['dob']
+            blood=request.POST['blood']
+            fmname=request.POST['fm_name']
+            sname=request.POST['s_name']        
+            add1=request.POST['address']
+            add2=request.POST['address2']
+            address=add1+" "+add2
+            padd1=request.POST['paddress'] 
+            padd2=request.POST['paddress2'] 
+            paddress= padd1+padd2
+            phone=request.POST['phone']
+            ephone=request.POST['ephone']
+            result_set1 = payroll_employee.objects.filter(company=company_details,Phone=phone).exclude(id=pk)
+            result_set3 = payroll_employee.objects.filter(company=company_details,emergency_phone=phone).exclude(id=pk)
+            if result_set1:
+                messages.error(request,'phone no already exists')
+                return redirect('payroll_employee_edit',pk)
+            if result_set3:
+                messages.error(request,'emergency phone no already exists')
+                return redirect('payroll_employee_edit',pk)
+            email=request.POST['email']
+            result_set = payroll_employee.objects.filter(company=company_details,email=email).exclude(id=pk)
+            if result_set:
+                messages.error(request,'email already exists')
+                return redirect('payroll_employee_edit',pk)
+            isdts=request.POST['tds']
+            attach=request.FILES.get('attach')
+            if isdts == '1':
+                istdsval=request.POST['pora']
+                if istdsval == 'Percentage':
+                    tds=request.POST['pcnt']
+                elif istdsval == 'Amount':
+                    tds=request.POST['amnt']
+            else:
+                istdsval='No'
+                tds = 0
+            itn=request.POST['itn']
+            an=request.POST['an'] 
+            if payroll_employee.objects.filter(Aadhar=an,company=company_details).exclude(id=pk):
+                messages.error(request,'Aadhra number already exists')
+                return redirect('payroll_employee_edit',pk)
+            uan=request.POST['uan'] 
+            pfn=request.POST['pfn']
+            pran=request.POST['pran']
+            age=request.POST['age']
+            bank=request.POST['bank']
+            accno=request.POST['acc_no']       
+            ifsc=request.POST['ifsc']       
+            bname=request.POST['b_name']       
+            branch=request.POST['branch']
+            ttype=request.POST['ttype']
+            if log_details.user_type == 'Company':
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+                payroll= payroll_employee.objects.get(id=pk)
+                payroll.title=title
+                payroll.first_name=fname
+                payroll.last_name=lname
+                payroll.alias=alias
+                if len(request.FILES) != 0:
+                    if image :
+                        if payroll.image:
+                            try:
+                                # Check if the file exists before removing it
+                                if os.path.exists(payroll.image.path):
+                                    os.remove(payroll.image.path)
+                            except Exception as e:
+                                return redirect('payroll_employee_edit',pk)
+
+                            # Assign the new file to payroll.image
+                            payroll.image = image
+                        else:
+                            # Assign the new file to payroll.image
+                            payroll.image = image
+                payroll.joindate=joindate
+                payroll.salary_type=saltype
+                payroll.salary=salary
+                age=age
+                payroll.emp_number=empnum
+                payroll.designation=designation
+                payroll.location=location
+                payroll.gender=gender
+                payroll.dob=dob
+                payroll.blood=blood
+                payroll.parent=fmname
+                payroll.spouse_name=sname
+                payroll.workhr=workhr
+                payroll.amountperhr = amountperhr
+                payroll.address=address
+                payroll.permanent_address=paddress
+                payroll.Phone=phone
+                payroll.emergency_phone=ephone
+                payroll.email=email
+                payroll.Income_tax_no=itn
+                payroll.Aadhar=an
+                payroll.UAN=uan
+                payroll.PFN=pfn
+                payroll.PRAN=pran
+                if len(request.FILES) !=0:
+                    if attach :
+                        if payroll.uploaded_file:
+                            try:
+                                # Check if the file exists before removing it
+                                if os.path.exists(payroll.uploaded_file.path):
+                                    os.remove(payroll.uploaded_file.path)
+                            except Exception as e:
+                                return redirect('payroll_employee_edit',pk)
+
+                            # Assign the new file to payroll.image
+                            payroll.uploaded_file = attach
+                        else:
+                            # Assign the new file to payroll.image
+                            payroll.uploaded_file = attach
+                payroll.isTDS=istdsval
+                payroll.TDS_percentage=tds
+                payroll.salaryrange = salarydate
+                payroll.acc_no=accno
+                payroll.IFSC=ifsc
+                payroll.bank_name=bname
+                payroll.branch=branch
+                payroll.transaction_type=ttype
+                payroll.company=dash_details
+                payroll.login_details=log_details
+                payroll.save()
+                history=employee_history(company=dash_details,login_details=log_details, employee=payroll,Action='EDITED')
+                history.save()
+                messages.info(request,'Updated')
+                return redirect('employee_overview',pk)
+        if log_details.user_type == 'Staff':
+            if log_details.user_type =='Staff':
+                company_details = StaffDetails.objects.get(login_details=log_details)    
+                title=request.POST['title']
+                fname=request.POST['fname']
+                lname=request.POST['lname']
+                alias=request.POST['alias']
+                joindate=request.POST['joindate']
+                salarydate=request.POST['salary']
+                saltype=request.POST['saltype']
+                if (saltype == 'Fixed' or saltype =='Temporary'):
+                    salary=request.POST['fsalary']
+                else:
+                    salary=request.POST['vsalary']
+                image=request.FILES.get('file')
+                amountperhr=request.POST['amnthr']
+                workhr=request.POST['hours']
+                empnum=request.POST['empnum']
+                result_set2 = payroll_employee.objects.filter(company=company_details.company,emp_number=empnum).exclude(id=pk)
+                if result_set2:
+                    messages.error(request,'employee number  already exists')
+                    return redirect('payroll_employee_edit',pk)
+                designation = request.POST['designation']
+                location=request.POST['location']
+                gender=request.POST['gender']
+                dob=request.POST['dob']
+                blood=request.POST['blood']
+                fmname=request.POST['fm_name']
+                sname=request.POST['s_name']        
+                add1=request.POST['address']
+                add2=request.POST['address2']
+                address=add1+" "+add2
+                padd1=request.POST['paddress'] 
+                padd2=request.POST['paddress2'] 
+                paddress= padd1+padd2
+                phone=request.POST['phone']
+                ephone=request.POST['ephone']
+                result_set1 = payroll_employee.objects.filter(company=company_details.company,Phone=phone).exclude(id=pk)
+                result_set3 = payroll_employee.objects.filter(company=company_details.company,emergency_phone=ephone).exclude(id=pk)
+                if result_set1:
+                    messages.error(request,'phone no already exists')
+                    return redirect('payroll_employee_edit',pk)
+                if result_set3:
+                    messages.error(request,'emergency phone no already exists')
+                    return redirect('payroll_employee_edit',pk)
+                email=request.POST['email']
+                result_set = payroll_employee.objects.filter(company=company_details.company,email=email).exclude(id=pk)
+                if result_set:
+                    messages.error(request,'email already exists')
+                    return redirect('payroll_employee_edit',pk)
+                isdts=request.POST['tds']
+                attach=request.FILES.get('attach')
+                if isdts == '1':
+                    istdsval=request.POST['pora']
+                    if istdsval == 'Percentage':
+                        tds=request.POST['pcnt']
+                    elif istdsval == 'Amount':
+                        tds=request.POST['amnt']
+                else:
+                    istdsval='No'
+                    tds = 0
+                itn=request.POST['itn']
+                an=request.POST['an'] 
+                if payroll_employee.objects.filter(Aadhar=an,company=company_details.company).exclude(id=pk):
+                    messages.error(request,'Aadhra number already exists')
+                    return redirect('payroll_employee_edit',pk)
+                uan=request.POST['uan'] 
+                pfn=request.POST['pfn']
+                pran=request.POST['pran']
+                age=request.POST['age']
+                bank=request.POST['bank']
+                accno=request.POST['acc_no']       
+                ifsc=request.POST['ifsc']       
+                bname=request.POST['b_name']       
+                branch=request.POST['branch']
+                ttype=request.POST['ttype']
+                dash_details = StaffDetails.objects.get(login_details=log_details)
+                payroll= payroll_employee.objects.get(id=pk)
+                payroll.title=title
+                payroll.first_name=fname
+                payroll.last_name=lname
+                payroll.alias=alias
+                if len(request.FILES) != 0:
+                    if image :
+                        if payroll.image:
+                            try:
+                                # Check if the file exists before removing it
+                                if os.path.exists(payroll.image.path):
+                                    os.remove(payroll.image.path)
+                            except Exception as e:
+                                return redirect('payroll_employee_edit',pk)
+
+                            # Assign the new file to payroll.image
+                            payroll.image = image
+                        else:
+                            # Assign the new file to payroll.image
+                            payroll.image = image
+                payroll.joindate=joindate
+                payroll.salary_type=saltype
+                payroll.salary=salary
+                age=age
+                payroll.emp_number=empnum
+                payroll.designation=designation
+                payroll.location=location
+                payroll.gender=gender
+                payroll.dob=dob
+                payroll.blood=blood
+                payroll.parent=fmname
+                payroll.spouse_name=sname
+                payroll.workhr=workhr
+                payroll.amountperhr = amountperhr
+                payroll.address=address
+                payroll.permanent_address=paddress
+                payroll.Phone=phone
+                payroll.emergency_phone=ephone
+                payroll.email=email
+                payroll.Income_tax_no=itn
+                payroll.Aadhar=an
+                payroll.UAN=uan
+                payroll.PFN=pfn
+                payroll.PRAN=pran
+                if len(request.FILES) !=0:
+                    if attach :
+                        if payroll.uploaded_file:
+                            try:
+                                # Check if the file exists before removing it
+                                if os.path.exists(payroll.uploaded_file.path):
+                                    os.remove(payroll.uploaded_file.path)
+                            except Exception as e:
+                                return redirect('payroll_employee_edit',pk)
+
+                            # Assign the new file to payroll.image
+                            payroll.uploaded_file = attach
+                        else:
+                            # Assign the new file to payroll.image
+                            payroll.uploaded_file = attach
+                payroll.isTDS=istdsval
+                payroll.TDS_percentage=tds
+                payroll.salaryrange = salarydate
+                payroll.acc_no=accno
+                payroll.IFSC=ifsc
+                payroll.bank_name=bname
+                payroll.branch=branch
+                payroll.transaction_type=ttype
+                payroll.company=dash_details.company
+                payroll.login_details=log_details
+                payroll.save()
+                history=employee_history(company=dash_details.company,login_details=log_details, employee=payroll,Action='EDITED')
+                history.save()
+                messages.info(request,'Updated')
+                return redirect('employee_overview',pk)
+    return redirect('employee_overview',pk)
+            
