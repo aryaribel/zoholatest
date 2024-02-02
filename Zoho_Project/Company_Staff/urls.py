@@ -35,6 +35,9 @@ urlpatterns = [
     path('import_vendor_excel',views.import_vendor_excel,name='import_vendor_excel'),
     path('Vendor_edit/<int:pk>',views.Vendor_edit,name='Vendor_edit'),
     path('do_vendor_edit/<int:pk>',views.do_vendor_edit,name='do_vendor_edit'),
+    path('delete_vendors/<int:pk>',views.delete_vendors,name='delete_vendors'),
+    path('vendor_status/<int:pk>',views.vendor_status,name='vendor_status'),
+    path('add_comment/<int:pk>',views.add_comment,name='add_comment'),
 
 
 ]

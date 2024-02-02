@@ -55,11 +55,11 @@
                         
                        </select> 
                 </div>
-                <div class="col-sm-12 col-md-2 col-lg-3" style="width:17rem;">
+                <div class="col-sm-12 col-md-2 col-lg-3" style="width:12rem;">
                     <input  type="text" class="form-control bg-light text-dark  " id="fname" name="first_name" placeholder="first name" required >
 
                 </div>
-                <div class="col-sm-12 col-md-2 col-lg-3" style="width:17rem;">
+                <div class="col-sm-12 col-md-2 col-lg-3" style="width:12rem;">
                     <input type="text" class="form-control bg-light text-dark " id="lname" name="last_name" placeholder="last name" required >
 
                 </div>
@@ -531,7 +531,9 @@
                     <div class="col-sm-12 ">
                         
                             <table id="tbl" class="table text-white" style="background-color: rgba(250, 227, 198, 0.5);">
+                                <thead>
                                 <tr>
+                                    
                                   <th>Salutation</th>
                                   <th>First Name</th>
                                   <th>Last Name</th>
@@ -542,6 +544,8 @@
                                   <th >Designation</th>
                                   <th >Department</th>
                                 </tr>
+                            </thead>
+                            <tbody>
                                 <tr>
                                   <td><select name="salutation[]" class="bg-transparent border-0 text-white"  id="PLACE" >
                                     <option class="text-dark"  >Select</option>
@@ -554,15 +558,14 @@
                                   <td><input type="text" class=" form-control border-1 bg-transparent text-white"    name="first_name[]"  ></td>
                                   <td><input type="text"class="form-control border-1 bg-transparent text-white"  name="last_name[]" /></td>
                                   <td><input type="text" class="form-control border-1 bg-transparent text-white"  name="email[]" /></td>
-                                  <!-- <td><input type="text" style="width:8rem;" name="wphone[]" /></td>
-                                  <td><input type="text" style="width:8rem;" name="mobile[]" /></td>
-                                  <td><input type="text" style="width:8rem;" name="skype[]" /></td> -->
+                                
                                   <td><input type="tel" pattern="[0-9]{7}" class="form-control border-1 bg-transparent text-white"  id="twphone" name="wphone[]"/></td>
                                   <td><input type="tel" pattern="[0-9]{10}"  class="form-control border-1 bg-transparent text-white"  id="tmobile" onclick="sample1()"   name="mobile[]" /></td>
                                   <td><input type="number" class="form-control border-1 bg-transparent text-white"  onclick="sample()" name="skype[]" /></td>
                                   <td><input type="text" class="form-control border-1 bg-transparent text-white"  name="designation[]" /></td>
                                   <td><input type="text" class="form-control border-1 bg-transparent text-white"  name="department[]" /></td>
                                 </tr>
+                            </tbody>
                               </table>
                              
                         
@@ -744,11 +747,7 @@
 
    
 
-    //   $('document').ready(function () {
-    //     $('.add_another').click(function () {
-    //       $("#tbl").append('<tr><td><select name="salutation[]" id="PLACE" style="width:8rem;height: 2.4rem;"><option value="Mr" selected>Mr.</option><option value=""Mrs">Mrs.</option><option value="Ms">Ms.</option><option value="Miss">Miss.</option><option value="Dr">Dr.</option></select>  </td><td><input type="text" name="first_name[]" style="width:8rem;" class="txtbox" value="" /></td><td><input type="text" name="last_name[]" style="width:8rem;" class="txtbox" value="" /></td><td><input type="text" name="email[]" style="width:8rem;" class="txtbox" value="" /></td><td><input type="text" name="wphone[]" style="width:8rem;" class="txtbox" value="" /></td><td><input type="text" name="mobile[]" style="width:8rem;" class="txtbox" value="" /></td><td><input type="text" name="skype[]" style="width:8rem;" class="txtbox" value="" /></td><td><input type="text" name="designation[]" style="width:8rem;" class="txtbox" value="" /></td><td><input type="text" name="department[]" style="width:8rem;" class="txtbox" value="" /></td></tr>');
-    //     });
-    //   })
+   
 
     $('document').ready(function () {
         $('.add_another').click(function () {

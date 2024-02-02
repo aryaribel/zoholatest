@@ -8,7 +8,7 @@ from Company_Staff.models import Vendor, Vendor_comments_table, Vendor_doc_uploa
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from openpyxl import load_workbook
-
+from django.http import HttpResponseNotFound
 
 
 # -------------------------------Company section--------------------------------
@@ -612,19 +612,14 @@ def do_vendor_edit(request,pk):
             person = request.POST.getlist('contact_person_id[]')
             vdata=Vendor.objects.get(id=vendor_data.id)
             vendor=vdata
-           
+            print(person)
             if title != ['Select']:
                 if len(title)==len(first_name)==len(last_name)==len(email)==len(work_phone)==len(mobile)==len(skype_name_number)==len(designation)==len(department)==len(person):
                     mapped2=zip(title,first_name,last_name,email,work_phone,mobile,skype_name_number,designation,department,person)
                     mapped2=list(mapped2)
                     for ele in mapped2:
-                        # created = VendorContactPerson.objects.get_or_create(title=ele[0],first_name=ele[1],last_name=ele[2],email=ele[3],
-                        #         work_phone=ele[4],mobile=ele[5],skype_name_number=ele[6],designation=ele[7],department=ele[8],company=dash_details,vendor=vendor)
-                
-        
-                # Check if the instance already exists based on some criteria (e.g., email)
+                       
                         existing_instance = VendorContactPerson.objects.filter(id=ele[9], company=dash_details, vendor=vendor).first()
-
                         if existing_instance:
                             # Update the existing instance
                             existing_instance.title = ele[0]
@@ -647,6 +642,38 @@ def do_vendor_edit(request,pk):
                                 work_phone=ele[4],mobile=ele[5],skype_name_number=ele[6],designation=ele[7],department=ele[8],company=dash_details,vendor=vendor
                             )
             return redirect('view_vendor_list')
-
     
-            
+
+def delete_vendors(request, pk):
+    try:
+        vendor_obj = Vendor.objects.get(id=pk)
+
+        vendor_obj.delete()
+        return redirect('view_vendor_list')  
+
+        return render(request, 'zohomodules/vendor_list.html', {'vendor_obj': vendor_obj})
+
+    except Vendor.DoesNotExist:
+        return HttpResponseNotFound("Vendor not found.")
+def vendor_status(request,pk):
+    vendor_obj = Vendor.objects.get(id=pk)
+    if vendor_obj.vendor_status == 'Active':
+        vendor_obj.vendor_status ='Inactive'
+    elif vendor_obj.vendor_status == 'Inactive':
+        vendor_obj.vendor_status ='Active'
+    vendor_obj.save()
+    return redirect('view_vendor_details',pk)   
+
+def add_comment(request,pk):
+    if request.method =='POST':
+        comment_data=request.POST['comments']
+        if 'login_id' in request.session:
+            log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        payroll= Vendor.objects.get(id=pk) 
+        vendor_obj=Vendor_comments_table(comment=comment_data,login_details=log_details,employee=payroll)
+        vendor_obj.save()
+        return redirect('view_vendor_details',pk)
+    return redirect('view_vendor_details',pk) 
