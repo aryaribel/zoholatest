@@ -1,14 +1,25 @@
+
 from django.shortcuts import render,redirect
 from Register_Login.models import *
 from Register_Login.views import logout
 
 # Create your views here.
 from django.contrib.auth.models import User,auth
-from Company_Staff.models import Vendor, Vendor_comments_table, Vendor_doc_upload_table, Vendor_mail_table,Vendor_remarks_table,VendorContactPerson
+from Company_Staff.models import Vendor, Vendor_comments_table, Vendor_doc_upload_table, Vendor_mail_table,Vendor_remarks_table,VendorContactPerson,VendorHistory
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from openpyxl import load_workbook
 from django.http import HttpResponseNotFound
+import os
+from datetime import date
+from email.message import EmailMessage
+from io import BytesIO
+from django.conf import settings
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponseServerError
+from django.core.mail import EmailMessage
 
 
 # -------------------------------Company section--------------------------------
@@ -295,6 +306,17 @@ def add_vendor(request):
             vendor_data.shipping_phone=request.POST['sphone']
             vendor_data.shipping_fax=request.POST['sfax']
             vendor_data.save()
+
+           # ................ Adding to History table...........................
+            
+            vendor_history_obj=VendorHistory()
+            vendor_history_obj.company=dash_details
+            vendor_history_obj.login_details=log_details
+            vendor_history_obj.vendor=vendor_data
+            vendor_history_obj.date=date.today()
+            vendor_history_obj.action='Registration Completed'
+            vendor_history_obj.save()
+
     # .......................................................adding to remaks table.....................
             vdata=Vendor.objects.get(id=vendor_data.id)
             vendor=vdata
@@ -436,8 +458,8 @@ def view_vendor_details(request,pk):
         allmodules= ZohoModules.objects.get(company=dash_details,status='New')
 
         vendor_obj=Vendor.objects.get(id=pk)
-
-    
+        vendor_comments=Vendor_comments_table.objects.filter(vendor=vendor_obj)
+        vendor_history=VendorHistory.objects.filter(vendor=vendor_obj)
     
     content = {
                 'details': dash_details,
@@ -445,6 +467,8 @@ def view_vendor_details(request,pk):
                 'allmodules': allmodules,
                 'vendor_obj':vendor_obj,
               'log_details':log_details,
+              'vendor_comments':vendor_comments,
+              'vendor_history':vendor_history,
         }
     return render(request,'zohomodules/vendor_detailsnew.html',content)
 
@@ -589,6 +613,17 @@ def do_vendor_edit(request,pk):
             vendor_data.shipping_phone=request.POST['sphone']
             vendor_data.shipping_fax=request.POST['sfax']
             vendor_data.save()
+
+
+              # ................ Adding to History table...........................
+            
+            vendor_history_obj=VendorHistory()
+            vendor_history_obj.company=dash_details
+            vendor_history_obj.login_details=log_details
+            vendor_history_obj.vendor=vendor_data
+            vendor_history_obj.date=date.today()
+            vendor_history_obj.action='Edited'
+            vendor_history_obj.save()
     # .......................................................adding to remaks table.....................
             vdata=Vendor.objects.get(id=vendor_data.id)
             rdata=Vendor_remarks_table.objects.get(vendor=vdata)
@@ -650,11 +685,9 @@ def delete_vendors(request, pk):
 
         vendor_obj.delete()
         return redirect('view_vendor_list')  
-
-        return render(request, 'zohomodules/vendor_list.html', {'vendor_obj': vendor_obj})
-
     except Vendor.DoesNotExist:
         return HttpResponseNotFound("Vendor not found.")
+    
 def vendor_status(request,pk):
     vendor_obj = Vendor.objects.get(id=pk)
     if vendor_obj.vendor_status == 'Active':
@@ -665,15 +698,93 @@ def vendor_status(request,pk):
     return redirect('view_vendor_details',pk)   
 
 def add_comment(request,pk):
-    if request.method =='POST':
-        comment_data=request.POST['comments']
-        if 'login_id' in request.session:
+    if 'login_id' in request.session:
+        if request.session.has_key('login_id'):
             log_id = request.session['login_id']
-        if 'login_id' not in request.session:
+           
+        else:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        payroll= Vendor.objects.get(id=pk) 
-        vendor_obj=Vendor_comments_table(comment=comment_data,login_details=log_details,employee=payroll)
-        vendor_obj.save()
-        return redirect('view_vendor_details',pk)
+        if log_details.user_type=='Staff':
+            staff_details=StaffDetails.objects.get(login_details=log_details)
+            dash_details = CompanyDetails.objects.get(id=staff_details.company.id)
+
+        else:    
+            dash_details = CompanyDetails.objects.get(login_details=log_details)
+  
+        if request.method =='POST':
+            comment_data=request.POST['comments']
+       
+            vendor_id= Vendor.objects.get(id=pk) 
+            vendor_obj=Vendor_comments_table()
+            vendor_obj.comment=comment_data
+            vendor_obj.vendor=vendor_id
+            vendor_obj.company=dash_details
+            vendor_obj.login_details= LoginDetails.objects.get(id=log_id)
+
+            vendor_obj.save()
+            return redirect('view_vendor_details',pk)
     return redirect('view_vendor_details',pk) 
+
+
+def delete_comment(request, pk):
+    try:
+        vendor_comment =Vendor_comments_table.objects.get(id=pk)
+        vendor_id=vendor_comment.vendor.id
+        vendor_comment.delete()
+        return redirect('view_vendor_details',vendor_id)  
+    except Vendor_comments_table.DoesNotExist:
+        return HttpResponseNotFound("comments not found.")
+    
+
+# def add_file(request,pk):
+#     if request.method == 'POST':
+#         data=request.FILES.get('file')
+#         vendor_obj=Vendor.objects.get(id=pk)
+#         if vendor_obj.uploaded_file:
+#             try:
+#                                 # Check if the file exists before removing it
+#                 if os.path.exists(vendor_obj.uploaded_file.path):
+#                     os.remove(vendor_obj.uploaded_file.path)
+#             except Exception as e:
+#                 messages.error(request,'file upload error')
+#                 return redirect('employee_overview',pk)
+
+#                             # Assign the new file to payroll.image
+#             vendor_obj.uploaded_file = data
+#             vendor_obj.save()
+#             messages.info(request,'fil uploaded')
+#             return redirect('view_vendor_details',pk)
+#         else:
+#             vendor_obj.uploaded_file = data
+#             vendor_obj.save()
+#         messages.info(request,'fil uploaded')
+#         return redirect('view_vendor_details',pk)    
+    
+def shareemail(request,pk):
+    try:
+            if request.method == 'POST':
+                emails_string = request.POST['email']
+
+    
+                emails_list = [email.strip() for email in emails_string.split(',')]
+                vendor_obj=Vendor.objects.get(id=pk)
+                        
+                context = {'vendor_obj':vendor_obj}
+                template_path = 'zohomodules/vendormailoverview.html'
+                template = get_template(template_path)
+                html  = template.render(context)
+                result = BytesIO()
+                pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+                pdf = result.getvalue()
+                filename = f'{vendor_obj.first_name}details - {vendor_obj.id}.pdf'
+                subject = f"{vendor_obj.first_name}{vendor_obj.last_name}  - {vendor_obj.id}-details"
+                email = EmailMessage(subject, f"Hi,\nPlease find the attached vendor details - File-{vendor_obj.first_name}{vendor_obj.last_name} .\n--\nRegards,\n", from_email=settings.EMAIL_HOST_USER, to=emails_list)
+                email.attach(filename, pdf, "application/pdf")
+                email.send(fail_silently=False)
+                messages.success(request, 'over view page has been shared via email successfully..!')
+                return redirect('view_vendor_details',pk)
+    except Exception as e:
+            print(e)
+            messages.error(request, f'{e}')
+            return redirect('view_vendor_details',pk)

@@ -75,15 +75,18 @@ class VendorHistory(models.Model):
     login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     date = models.DateField()
-    action = models.CharField(max_length=10)
+    action = models.CharField(max_length=200,null=True,blank=True)
 
     def __str__(self):
         return f"{self.vendor} - {self.action}"
+    
 class Vendor_remarks_table(models.Model):
     company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
     vendor=models.ForeignKey(Vendor,on_delete=models.CASCADE,null=True)
-    remarks=models.CharField(max_length=500)    
+    remarks=models.CharField(max_length=500)
+
 class Vendor_comments_table(models.Model):
+    login_details=models.ForeignKey(LoginDetails,on_delete=models.CASCADE,null=True)
     company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
     vendor=models.ForeignKey(Vendor,on_delete=models.CASCADE,null=True)
     comment=models.TextField(max_length=500)
@@ -98,6 +101,7 @@ class Vendor_mail_table(models.Model):
     mail_date=models.DateTimeField(auto_now_add=True)
 
 class Vendor_doc_upload_table(models.Model):
+    login_details=models.ForeignKey(LoginDetails,on_delete=models.CASCADE,null=True)
     company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
     vendor=models.ForeignKey(Vendor,on_delete=models.CASCADE,null=True)
     title=models.TextField(max_length=200)

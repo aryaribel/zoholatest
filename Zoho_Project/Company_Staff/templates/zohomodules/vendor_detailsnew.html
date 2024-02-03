@@ -343,13 +343,13 @@
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    {% for c in comment %}
+                                    {% for c in vendor_comments %}
                                       <tr class="table-row">
                                         <td style="text-align: center;">{{forloop.counter }}</td>
                                         <td style="text-align: center;">{{c.comment}}</td>
                                         <td style="text-align: center;">{{c.login_details.first_name}} {{c.login_details.last_name}}</td>
                                         <td style="text-align: center;">
-                                          <a class="text-danger" href=""><i class="fa fa-trash" style="font-size:20px;"></i></a>
+                                          <a class="text-danger" href="{% url 'delete_comment' c.id %}"><i class="fa fa-trash" style="font-size:20px;"></i></a>
                                         </td>
                                       </tr>
                                     {% endfor %}
@@ -395,14 +395,14 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                <!-- {% for i in history %}
+                                {% for i in vendor_history %}
                                 <tr class="table-row">
                                   <td>{{forloop.counter}}</td>
-                                  <td>{{i.Date}}</td>
-                                  <td>{{i.Action}}</td>
+                                  <td>{{i.date}}</td>
+                                  <td>{{i.action}}</td>
                                   <td>{{i.login_details.first_name}} {{i.login_details.Last_name}}</td>
                                 </tr>
-                                {% endfor %} -->
+                                {% endfor %}
                               </tbody>
                             </table>
                           </div>
@@ -448,7 +448,7 @@
                             <span aria-hidden="true" style="font-size: x-large;">&times;</span>
                           </button>
                         </div>
-                        <form action="" method="POST" enctype="multipart/form-data">
+                        <form action="{% url 'shareemail' vendor_obj.id %}" method="POST" enctype="multipart/form-data">
                           {% csrf_token %}
                           <div class="modal-body">
                             <input type="email" name="email" required style="color:white;" class="form-control">
