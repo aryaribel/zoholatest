@@ -9,7 +9,7 @@ from Company_Staff.models import Vendor, Vendor_comments_table, Vendor_doc_uploa
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from openpyxl import load_workbook
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, JsonResponse
 import os
 from datetime import date
 from email.message import EmailMessage
@@ -18,7 +18,6 @@ from django.conf import settings
 from xhtml2pdf import pisa
 from django.template.loader import get_template
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseServerError
 from django.core.mail import EmailMessage
 
 
@@ -737,29 +736,29 @@ def delete_comment(request, pk):
         return HttpResponseNotFound("comments not found.")
     
 
-# def add_file(request,pk):
-#     if request.method == 'POST':
-#         data=request.FILES.get('file')
-#         vendor_obj=Vendor.objects.get(id=pk)
-#         if vendor_obj.uploaded_file:
-#             try:
-#                                 # Check if the file exists before removing it
-#                 if os.path.exists(vendor_obj.uploaded_file.path):
-#                     os.remove(vendor_obj.uploaded_file.path)
-#             except Exception as e:
-#                 messages.error(request,'file upload error')
-#                 return redirect('employee_overview',pk)
+def add_file(request,pk):
+    if request.method == 'POST':
+        data=request.FILES.get('file')
+        vendor_obj=Vendor.objects.get(id=pk)
+        if vendor_obj.uploaded_file:
+            try:
+                                # Check if the file exists before removing it
+                if os.path.exists(vendor_obj.uploaded_file.path):
+                    os.remove(vendor_obj.uploaded_file.path)
+            except Exception as e:
+                messages.error(request,'file upload error')
+                return redirect('view_vendor_details',pk)
 
-#                             # Assign the new file to payroll.image
-#             vendor_obj.uploaded_file = data
-#             vendor_obj.save()
-#             messages.info(request,'fil uploaded')
-#             return redirect('view_vendor_details',pk)
-#         else:
-#             vendor_obj.uploaded_file = data
-#             vendor_obj.save()
-#         messages.info(request,'fil uploaded')
-#         return redirect('view_vendor_details',pk)    
+                            # Assign the new file to payroll.image
+            vendor_obj.uploaded_file = data
+            vendor_obj.save()
+            messages.info(request,'fil uploaded')
+            return redirect('view_vendor_details',pk)
+        else:
+            vendor_obj.uploaded_file = data
+            vendor_obj.save()
+        messages.info(request,'fil uploaded')
+        return redirect('view_vendor_details',pk)    
     
 def shareemail(request,pk):
     try:
@@ -788,3 +787,37 @@ def shareemail(request,pk):
             print(e)
             messages.error(request, f'{e}')
             return redirect('view_vendor_details',pk)
+    
+
+def payment_terms_add(request):
+    if 'login_id' in request.session:
+        if request.session.has_key('login_id'):
+            log_id = request.session['login_id']
+           
+        else:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        if log_details.user_type=='Staff':
+            staff_details=StaffDetails.objects.get(login_details=log_details)
+            dash_details = CompanyDetails.objects.get(id=staff_details.company.id)
+
+        else:    
+            dash_details = CompanyDetails.objects.get(login_details=log_details)        
+        if request.method == 'POST':
+            terms = request.POST.get('name')
+            day = request.POST.get('days')
+            ptr = Company_Payment_Term(term_name=terms, days=day, company=dash_details)
+            ptr.save()
+            payterms_obj = Company_Payment_Term.objects.filter(company=dash_details).values('id', 'term_name')
+
+
+            payment_list = [{'id': pay_terms['id'], 'name': pay_terms['term_name']} for pay_terms in payterms_obj]
+            response_data = {
+            "message": "success",
+            'payment_list':payment_list,
+            }
+            return JsonResponse(response_data)
+
+        else:
+            return JsonResponse({'error': 'Invalid request'}, status=400)   
+            

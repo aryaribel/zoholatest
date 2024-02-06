@@ -40,6 +40,7 @@ urlpatterns = [
     path('add_comment/<int:pk>',views.add_comment,name='add_comment'),
     path('delete_comment/<int:pk>',views.delete_comment,name='delete_comment'),
     path('shareemail/<int:pk>',views.shareemail,name='shareemail'),
+    path('payment_terms_add',views.payment_terms_add,name='payment_terms_add'),
 
 
 ]
