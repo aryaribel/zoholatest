@@ -1085,6 +1085,15 @@
 
 
           </script>
+<script>
+    // Get the input element
+    const inputElement = document.getElementById("tname");
 
+    // Add event listener for input event
+    inputElement.addEventListener("input", function() {
+        // Convert the input value to uppercase
+        this.value = this.value.toUpperCase();
+    });
+</script>
 
 {% endblock %}

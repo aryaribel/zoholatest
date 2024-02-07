@@ -9,7 +9,7 @@ from Company_Staff.models import Vendor, Vendor_comments_table, Vendor_doc_uploa
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from openpyxl import load_workbook
-from django.http import HttpResponseNotFound, JsonResponse
+from django.http import HttpResponseBadRequest, HttpResponseNotFound, JsonResponse
 import os
 from datetime import date
 from email.message import EmailMessage
@@ -19,6 +19,7 @@ from xhtml2pdf import pisa
 from django.template.loader import get_template
 from django.shortcuts import get_object_or_404
 from django.core.mail import EmailMessage
+from django.core.exceptions import ObjectDoesNotExist
 
 
 # -------------------------------Company section--------------------------------
@@ -696,7 +697,7 @@ def vendor_status(request,pk):
     vendor_obj.save()
     return redirect('view_vendor_details',pk)   
 
-def add_comment(request,pk):
+def vendor_add_comment(request,pk):
     if 'login_id' in request.session:
         if request.session.has_key('login_id'):
             log_id = request.session['login_id']
@@ -726,7 +727,7 @@ def add_comment(request,pk):
     return redirect('view_vendor_details',pk) 
 
 
-def delete_comment(request, pk):
+def vendor_delete_comment(request, pk):
     try:
         vendor_comment =Vendor_comments_table.objects.get(id=pk)
         vendor_id=vendor_comment.vendor.id
@@ -736,29 +737,39 @@ def delete_comment(request, pk):
         return HttpResponseNotFound("comments not found.")
     
 
-def add_file(request,pk):
-    if request.method == 'POST':
-        data=request.FILES.get('file')
-        vendor_obj=Vendor.objects.get(id=pk)
-        if vendor_obj.uploaded_file:
-            try:
-                                # Check if the file exists before removing it
-                if os.path.exists(vendor_obj.uploaded_file.path):
-                    os.remove(vendor_obj.uploaded_file.path)
-            except Exception as e:
-                messages.error(request,'file upload error')
-                return redirect('view_vendor_details',pk)
-
-                            # Assign the new file to payroll.image
-            vendor_obj.uploaded_file = data
-            vendor_obj.save()
-            messages.info(request,'fil uploaded')
-            return redirect('view_vendor_details',pk)
+def add_vendor_file(request,pk):
+    if 'login_id' in request.session:
+        if request.session.has_key('login_id'):
+            log_id = request.session['login_id']
+           
         else:
-            vendor_obj.uploaded_file = data
-            vendor_obj.save()
-        messages.info(request,'fil uploaded')
-        return redirect('view_vendor_details',pk)    
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        if log_details.user_type=='Staff':
+            staff_details=StaffDetails.objects.get(login_details=log_details)
+            dash_details = CompanyDetails.objects.get(id=staff_details.company.id)
+
+        else:    
+            dash_details = CompanyDetails.objects.get(login_details=log_details)
+        if request.method == 'POST':
+            data=request.FILES.getlist('file')
+            try:
+                for doc in data:
+
+                    vendor_obj=Vendor_doc_upload_table()
+                    
+                    vendor_obj.document = doc
+                    vendor_obj.login_details = log_details
+                    vendor_obj.company = dash_details
+                    vendor_obj.vendor = Vendor.objects.get(id=pk)
+                    vendor_obj.save()
+                
+                messages.success(request,'File uploaded')
+                return redirect('view_vendor_details',pk) 
+            except Vendor_doc_upload_table.DoesNotExist:
+                return redirect('view_vendor_details',pk) 
+
+
     
 def shareemail(request,pk):
     try:

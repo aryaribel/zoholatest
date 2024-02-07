@@ -37,10 +37,11 @@ urlpatterns = [
     path('do_vendor_edit/<int:pk>',views.do_vendor_edit,name='do_vendor_edit'),
     path('delete_vendors/<int:pk>',views.delete_vendors,name='delete_vendors'),
     path('vendor_status/<int:pk>',views.vendor_status,name='vendor_status'),
-    path('add_comment/<int:pk>',views.add_comment,name='add_comment'),
-    path('delete_comment/<int:pk>',views.delete_comment,name='delete_comment'),
+    path('vendor_add_comment/<int:pk>',views.vendor_add_comment,name='vendor_add_comment'),
+    path('vendor_delete_comment/<int:pk>',views.vendor_delete_comment,name='vendor_delete_comment'),
     path('shareemail/<int:pk>',views.shareemail,name='shareemail'),
     path('payment_terms_add',views.payment_terms_add,name='payment_terms_add'),
+    path('add_vendor_file/<int:pk>',views.add_vendor_file,name='add_vendor_file'),
 
 
 ]
