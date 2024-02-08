@@ -4,7 +4,6 @@ from Register_Login.models import *
 from Register_Login.views import logout
 
 # Create your views here.
-from django.contrib.auth.models import User,auth
 from Company_Staff.models import Vendor, Vendor_comments_table, Vendor_doc_upload_table, Vendor_mail_table,Vendor_remarks_table,VendorContactPerson,VendorHistory
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -187,6 +186,10 @@ def staff_profile(request):
 
 
 # -------------------------------Zoho Modules section--------------------------------
+ 
+ 
+ #-------------------------------Arya E.R-----------------------------------------------
+
  ##### Vendor #####
     
 def vendor(request):
@@ -242,6 +245,7 @@ def view_vendor_list(request):
 
 # @login_required(login_url='login')
 def add_vendor(request):
+    print('hiii')
     if 'login_id' in request.session:
         if request.session.has_key('login_id'):
             log_id = request.session['login_id']
@@ -255,6 +259,7 @@ def add_vendor(request):
 
         else:    
             dash_details = CompanyDetails.objects.get(login_details=log_details)
+
         if request.method=="POST":
             vendor_data=Vendor()
             vendor_data.login_details=log_details
@@ -306,7 +311,6 @@ def add_vendor(request):
             vendor_data.shipping_phone=request.POST['sphone']
             vendor_data.shipping_fax=request.POST['sfax']
             vendor_data.save()
-
            # ................ Adding to History table...........................
             
             vendor_history_obj=VendorHistory()
@@ -771,7 +775,7 @@ def add_vendor_file(request,pk):
 
 
     
-def shareemail(request,pk):
+def vendor_shareemail(request,pk):
     try:
             if request.method == 'POST':
                 emails_string = request.POST['email']
@@ -832,3 +836,5 @@ def payment_terms_add(request):
         else:
             return JsonResponse({'error': 'Invalid request'}, status=400)   
             
+
+#---------------------------------------End----------------------------------------------------------------            

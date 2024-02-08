@@ -20,7 +20,9 @@ urlpatterns = [
 
 
     # -------------------------------Zoho Modules section--------------------------------
-  
+    
+    #-------------------------Arya E.R---------------------------------------------------
+
     ####  Vendor ###########
     path('vendor',views.vendor,name='vendor'),
     path('view_vendor_list',views.view_vendor_list,name='view_vendor_list'),
@@ -39,9 +41,10 @@ urlpatterns = [
     path('vendor_status/<int:pk>',views.vendor_status,name='vendor_status'),
     path('vendor_add_comment/<int:pk>',views.vendor_add_comment,name='vendor_add_comment'),
     path('vendor_delete_comment/<int:pk>',views.vendor_delete_comment,name='vendor_delete_comment'),
-    path('shareemail/<int:pk>',views.shareemail,name='shareemail'),
+    path('vendor_shareemail/<int:pk>',views.vendor_shareemail,name='vendor_shareemail'),
     path('payment_terms_add',views.payment_terms_add,name='payment_terms_add'),
     path('add_vendor_file/<int:pk>',views.add_vendor_file,name='add_vendor_file'),
 
+#------------------------------End---------------------------------------------------------
 
 ]

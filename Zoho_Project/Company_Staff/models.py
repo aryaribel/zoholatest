@@ -2,10 +2,10 @@ from django.db import models
 
 # Create your models here.
 from Register_Login.models import LoginDetails,CompanyDetails,Company_Payment_Term
-from django.contrib.auth.models import User,auth
 
 #---------------- models for zoho modules--------------------
 
+#-----------------Arya E.R----------------------------------------
 
 class Vendor(models.Model):
     title = models.CharField(max_length=255,default='')
@@ -106,3 +106,5 @@ class Vendor_doc_upload_table(models.Model):
     vendor=models.ForeignKey(Vendor,on_delete=models.CASCADE,null=True)
     title=models.TextField(max_length=200)
     document=models.FileField(upload_to='doc/')
+
+#--------------------------------------end-----------------------------------------------------------
