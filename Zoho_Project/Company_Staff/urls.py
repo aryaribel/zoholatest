@@ -27,7 +27,6 @@ urlpatterns = [
     path('vendor',views.vendor,name='vendor'),
     path('view_vendor_list',views.view_vendor_list,name='view_vendor_list'),
     path('add_vendor/',views.add_vendor,name='add_vendor'),
-    path('cancel_vendor/',views.cancel_vendor,name='cancel_vendor'),
     path('view_vendor_active',views.view_vendor_active,name='view_vendor_active'),
     path('view_vendor_inactive',views.view_vendor_inactive,name='view_vendor_inactive'),
     path('sort_vendor_by_name',views.sort_vendor_by_name,name='sort_vendor_by_name'),

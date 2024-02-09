@@ -19,6 +19,7 @@ from django.template.loader import get_template
 from django.shortcuts import get_object_or_404
 from django.core.mail import EmailMessage
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 # -------------------------------Company section--------------------------------
@@ -211,9 +212,9 @@ def vendor(request):
         comp_payment_terms=Company_Payment_Term.objects.filter(company=dash_details)
         if log_details.user_type=='Staff':
 
-            return render(request,'zohomodules/create_vendor.html',{'details':dash_details,'allmodules': allmodules,'comp_payment_terms':comp_payment_terms,'log_details':log_details}) 
+            return render(request,'zohomodules/vendor/create_vendor.html',{'details':dash_details,'allmodules': allmodules,'comp_payment_terms':comp_payment_terms,'log_details':log_details}) 
         else:
-            return render(request,'zohomodules/create_vendor.html',{'details':dash_details,'allmodules': allmodules,'comp_payment_terms':comp_payment_terms,'log_details':log_details}) 
+            return render(request,'zohomodules/vendor/create_vendor.html',{'details':dash_details,'allmodules': allmodules,'comp_payment_terms':comp_payment_terms,'log_details':log_details}) 
     else:
         return redirect('/')
 
@@ -225,19 +226,32 @@ def view_vendor_list(request):
         else:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
+
         if log_details.user_type=='Staff':
             staff_details=StaffDetails.objects.get(login_details=log_details)
             dash_details = CompanyDetails.objects.get(id=staff_details.company.id)
 
         else:    
             dash_details = CompanyDetails.objects.get(login_details=log_details)
-        allmodules= ZohoModules.objects.get(company=dash_details,status='New')       
-        data=Vendor.objects.filter(company=dash_details)
-        if log_details.user_type=='Staff':
-            return render(request,'zohomodules/vendor_list.html',{'details':dash_details,'allmodules': allmodules,'data':data,'log_details':log_details}) 
 
-        else:
-            return render(request,'zohomodules/vendor_list.html',{'details':dash_details,'allmodules': allmodules,'data':data,'log_details':log_details}) 
+        allmodules= ZohoModules.objects.get(company=dash_details,status='New')  
+
+        data=Vendor.objects.filter(company=dash_details)
+
+         # Pagination
+        
+        # page = request.GET.get('page', 1)
+        # paginator = Paginator(data, 5)
+
+        # try:
+        #     items = paginator.page(page)
+        # except PageNotAnInteger:
+        #     items = paginator.page(1)
+        # except EmptyPage:
+        #     items = paginator.page(paginator.num_pages)
+
+        return render(request,'zohomodules/vendor/vendor_list.html',{'details':dash_details,'allmodules': allmodules,'data':data,'log_details':log_details}) 
+
 
     else:
         return redirect('/')
@@ -245,7 +259,7 @@ def view_vendor_list(request):
 
 # @login_required(login_url='login')
 def add_vendor(request):
-    print('hiii')
+   
     if 'login_id' in request.session:
         if request.session.has_key('login_id'):
             log_id = request.session['login_id']
@@ -260,6 +274,9 @@ def add_vendor(request):
         else:    
             dash_details = CompanyDetails.objects.get(login_details=log_details)
 
+        
+
+       
         if request.method=="POST":
             vendor_data=Vendor()
             vendor_data.login_details=log_details
@@ -331,7 +348,7 @@ def add_vendor(request):
             rdata.save()
 
 
-    #  ...........................adding multiple rows of table to model  ........................................................  
+     #...........................adding multiple rows of table to model  ........................................................  
         
             title =request.POST.getlist('salutation[]')
             first_name =request.POST.getlist('first_name[]')
@@ -355,11 +372,17 @@ def add_vendor(request):
                                 work_phone=ele[4],mobile=ele[5],skype_name_number=ele[6],designation=ele[7],department=ele[8],company=dash_details,vendor=vendor)
                 
         
-                    
+            messages.success(request, 'Data saved successfully!')   
+
+            return redirect('view_vendor_list')
+        
+        else:
+            messages.error(request, 'Some error occurred !')   
+
             return redirect('view_vendor_list')
     
-def cancel_vendor(request):
-    return redirect("vendor")
+
+
 def sort_vendor_by_name(request):
     if 'login_id' in request.session:
         if request.session.has_key('login_id'):
@@ -371,7 +394,7 @@ def sort_vendor_by_name(request):
         dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
   
         data=Vendor.objects.filter(login_details=log_details).order_by('first_name')
-        return render(request,'zohomodules/vendor_list.html',{'data':data,'dash_details':dash_details})
+        return render(request,'zohomodules/vendor/vendor_list.html',{'data':data,'dash_details':dash_details})
     else:
             return redirect('/')    
 
@@ -386,7 +409,7 @@ def sort_vendor_by_amount(request):
         dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
    
         data=Vendor.objects.filter(login_details=log_details).order_by('opening_balance')
-        return render(request,'zohomodules/vendor_list.html',{'data':data,'dash_details':dash_details})
+        return render(request,'zohomodules/vendor/vendor_list.html',{'data':data,'dash_details':dash_details})
     else:
          return redirect('/') 
 
@@ -401,7 +424,7 @@ def view_vendor_active(request):
         dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
    
         data=Vendor.objects.filter(login_details=log_details,vendor_status='Active').order_by('-id')
-        return render(request,'zohomodules/vendor_list.html',{'data':data,'dash_details':dash_details})
+        return render(request,'zohomodules/vendor/vendor_list.html',{'data':data,'dash_details':dash_details})
     else:
          return redirect('/') 
 
@@ -418,7 +441,7 @@ def view_vendor_inactive(request):
         dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
    
         data=Vendor.objects.filter(login_details=log_details,vendor_status='Inactive').order_by('-id')
-        return render(request,'zohomodules/vendor_list.html',{'data':data,'dash_details':dash_details})
+        return render(request,'zohomodules/vendor/vendor_list.html',{'data':data,'dash_details':dash_details})
     else:
          return redirect('/') 
     
@@ -474,7 +497,7 @@ def view_vendor_details(request,pk):
               'vendor_comments':vendor_comments,
               'vendor_history':vendor_history,
         }
-    return render(request,'zohomodules/vendor_detailsnew.html',content)
+    return render(request,'zohomodules/vendor/vendor_detailsnew.html',content)
 
 def import_vendor_excel(request):
    if 'login_id' in request.session:
@@ -550,7 +573,7 @@ def Vendor_edit(request,pk):
     }
    
 
-    return render(request,'zohomodules/edit_vendor.html',content)
+    return render(request,'zohomodules/vendor/edit_vendor.html',content)
 
 def do_vendor_edit(request,pk):
      if 'login_id' in request.session:
@@ -785,7 +808,7 @@ def vendor_shareemail(request,pk):
                 vendor_obj=Vendor.objects.get(id=pk)
                         
                 context = {'vendor_obj':vendor_obj}
-                template_path = 'zohomodules/vendormailoverview.html'
+                template_path = 'vendor/vendormailoverview.html'
                 template = get_template(template_path)
                 html  = template.render(context)
                 result = BytesIO()
