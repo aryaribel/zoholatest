@@ -193,7 +193,6 @@
 
                     </div>
 
-                </fieldset1>
 
            
                 <div class="form-group row mt-4">
@@ -202,6 +201,8 @@
                         <input id="web" type="text" class="form-control bg-light text-dark" onclick="mobile_phone()"    name="website" required>      
                     </div>
                 </div>
+            </fieldset1>
+
 
                 <hr style="border: none; height: 2px; background-color: #ffcc00; margin: 20px 0;">
 
@@ -918,7 +919,7 @@
         if (!expr.test(x)) {
             y.style.color="red";
             y.style.fontSize="0.750rem";
-            y.innerHTML = "Invalid Phone Number.";
+            y.innerHTML = "The Phone Number you provided is invalid, please provide a 7 digit number and try again.";
         }
         else{
             y.style.color="green";
