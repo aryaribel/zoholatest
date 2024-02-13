@@ -125,8 +125,8 @@
                 <div class="form-group row mt-4">
                     <div class="col-sm-12 col-md-3 col-lg-3 col-form-label"><label>Vendor Email</label></div>
                     <div class="col-sm-12 col-md-6 col-lg-7">
-                        <input  type="email" class="form-control bg-light text-dark" name="vendor_email" required> 
-                        <div class="invalid-feedback">Please fill out this field.</div>   
+                        <input  type="email" class="form-control bg-light text-dark" name="vendor_email"  id="vendor-email"  required> 
+                        <span class=" text-danger mt-1" id="email-message-id" style="font-size: 10px;"></span>   
     
                     </div>
 
@@ -138,15 +138,15 @@
                         <label class="col-form-label text-white">  Vendor phone</label>
                     </div>
                     <div class="col-sm-12 col-md-3 col-lg-3">
-                        <input id="workphone"  type="text" class="form-control bg-light text-dark mt-2" pattern="[0-9]{7}"   name="w_phone" placeholder="work phone" required>
-                        <span id="workphone_label" class="mt-2"></span >
-                        <div class="invalid-feedback">Please fill out this field.</div>   
+                        <input id="workphone"  type="text" class="form-control bg-light text-dark mt-2" pattern="[0-9]{7}" onclick="work_phone()"  name="w_phone" placeholder="work phone" required>
+                        <span id="workphone_label" class="mt-2" style="font-size: 10px;"></span >
+                        <div class="invalid-feedback"></div>   
     
                     </div>
                     <div class=" col-sm-12 col-md-3 col-lg-4">
-                        <input id="mphone"  type="text" pattern="[0-9]{10}" class="form-control bg-light text-dark mt-2" onclick="work_phone()"                        name="m_phone" placeholder="mobile number" required>
-                        <label for="" id="mphone_label"></label>
-                        <div class="invalid-feedback">Please fill out this field.</div>   
+                        <input id="mphone"  type="text" pattern="[0-9]{10}" class="form-control bg-light text-dark mt-2" onclick="mobile_phone()"   name="m_phone" placeholder="mobile number" required>
+                        <span id="mphone_label" class="mt-2" style="font-size: 10px;"></span >
+                        <div class="invalid-feedback"></div>   
     
                     </div>
 
@@ -198,7 +198,7 @@
                 <div class="form-group row mt-4">
                     <div class="col-sm-12 col-md-3 col-lg-3 col-form-label"><label>Website</label></div>
                     <div class="col-sm-12 col-md-6 col-lg-6">
-                        <input id="web" type="text" class="form-control bg-light text-dark" onclick="mobile_phone()"    name="website" required>      
+                        <input id="web" type="text" class="form-control bg-light text-dark" onclick="mobile_phone()"    name="website">      
                     </div>
                 </div>
             </fieldset1>
@@ -361,7 +361,7 @@
                         
                         <div class=" col-sm-12 col-md-3 col-lg-3">
                             <select name="payment_terms" id="paytearm-select" class="form-control bg-light text-dark">
-                                <option value="Due on Receipt" selected>Due on Receipt</option>
+                               
 
                                 {% for pay_terms in comp_payment_terms %}
                                 <option value="{{pay_terms.id}}" >{{pay_terms.term_name}}</option>
@@ -561,10 +561,20 @@
                                         </select></td>
                                     <td><input type="text" class=" form-control border-1 bg-transparent text-white"    name="first_name[]"  ></td>
                                     <td><input type="text"class="form-control border-1 bg-transparent text-white"  name="last_name[]" /></td>
-                                    <td><input type="text" class="form-control border-1 bg-transparent text-white"  name="email[]" /></td>
+                                    <td>
+                                        <input type="text" class="form-control border-1 bg-transparent text-white" name="email[]" />
+                                        
+                                        
+                                    </td>
                                     
-                                    <td><input type="tel" pattern="[0-9]{7}" class="form-control border-1 bg-transparent text-white"  id="twphone" name="wphone[]"/></td>
-                                    <td><input type="tel" pattern="[0-9]{10}"  class="form-control border-1 bg-transparent text-white"  id="tmobile" onclick="sample1()"   name="mobile[]" /></td>
+                                    <td>
+                                        <input type="tel" pattern="[0-9]{7}" class="form-control border-1 bg-transparent text-white"  id="twphone" name="wphone[]"/>
+                                       
+                                    </td>
+                                    <td>
+                                        <input type="tel" pattern="[0-9]{10}"  class="form-control border-1 bg-transparent text-white"  id="tmobile" onclick="sample1()"   name="mobile[]" />
+                                        
+                                    </td>
                                     <td><input type="number" class="form-control border-1 bg-transparent text-white"  onclick="sample()" name="skype[]" /></td>
                                     <td><input type="text" class="form-control border-1 bg-transparent text-white"  name="designation[]" /></td>
                                     <td><input type="text" class="form-control border-1 bg-transparent text-white"  name="department[]" /></td>
@@ -650,7 +660,9 @@
                             <div class="col-lg-12 col-md-12 col-sm-12 mt-2">
                                 <label for="termname" style="color: white">Term Name *</label>
 
-                            <input type="text " class="form-control text-dark bg-light mt-2" id="tname" name="term_name" autocapitalize="characters" required>      
+                            <input type="text " class="form-control text-dark bg-light mt-2" id="tname" name="term_name" autocapitalize="characters" required> 
+                            <span id="message-id" class="mt-1 text-danger" style="font-size: 10px;"></span> 
+                            <span id="success-message-id" class=" mt-1 text-success" style="font-size: 10px;"></span>    
                             </div>
             
                             <div class="col-lg-12 col-md-12 col-sm-12 mt-2">
@@ -694,6 +706,8 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" ></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" ></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script>
     function gstPan_function(){
@@ -1144,6 +1158,117 @@
     });
 </script>
 
+<script>
 
+$(document).ready(function() {
+    $('#tname').on('input', function() {
+        
+        var termName = $(this).val();
+       
+        $.ajax({
+            type: 'GET',
+            url:'{% url "check_term_exist" %}',
+            data: {
+                term_name: termName
+            },
+            success: function(response) {
+                if (response.exists) {
+                    $('#message-id').text('Term already exists !');
+                    $('#success-message-id').text('');
+                  
+                    $('#tname').val('');
+                } else {
+                    $('#success-message-id').text('Term name available !');
+                    $('#message-id').text('');
+                }
+                
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+});
+
+$('#vendor-email').on('input', function() {
+        
+    var vendorEmail = $(this).val();
+    console.log(vendorEmail)
+    $.ajax({
+        type: 'GET',
+        url:'{% url "check_email_exist" %}',
+        data: {
+            vendor_email: vendorEmail
+        },
+        success: function(response) {
+            if (response.exists) {
+                $('#email-message-id').text('Email id already exists !');
+                $('#vendor-email').val('');
+            }
+            else{
+                $('#email-message-id').text('');
+            }
+            
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+        }
+    });
+});
+
+$('#workphone').on('input', function() {
+        
+    var wPhone = $(this).val();
+    
+    $.ajax({
+        type: 'GET',
+        url:'{% url "check_work_phone_exist" %}',
+        data: {
+            w_Phone: wPhone
+        },
+        success: function(response) {
+            if (response.exists) {
+                $('#workphone_label').text('Work phone number already exists !');
+                $('#workphone').val('');
+            }
+            else{
+                $('#workphone_label').text('');
+            }
+            
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+        }
+    });
+});
+
+
+$('#mphone').on('input', function() {
+        
+    var mPhone = $(this).val();
+    
+    $.ajax({
+        type: 'GET',
+        url:'{% url "check_phonenumber_exist" %}',
+        data: {
+            m_Phone: mPhone
+        },
+        success: function(response) {
+            if (response.exists) {
+                $('#mphone_label').text('Phone number already exists !');
+                $('#mphone').val('');
+            }
+            else{
+                $('#mphone_label').text('');
+            }
+            
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+        }
+    });
+});
+
+</script>
 
 {% endblock %}

@@ -217,6 +217,11 @@ def company_registration_save2(request,pk):
     )
 
     company_details_instance.save()  # Save the instance to the database
+    com = CompanyDetails.objects.get(id=company_details_instance.id)
+
+    Company_Payment_Term.objects.create(company=com, term_name='Due on Receipt', days=0)
+    Company_Payment_Term.objects.create(company=com, term_name='NET 30', days=30)
+    Company_Payment_Term.objects.create(company=com, term_name='NET 60', days=60)
     messages.info=(request,'Company Details Saved')
     return redirect('modules_select_page', company_details_instance.id)
 

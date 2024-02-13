@@ -20,7 +20,8 @@ from django.shortcuts import get_object_or_404
 from django.core.mail import EmailMessage
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from django.db.models import Q
+import re
 
 # -------------------------------Company section--------------------------------
 
@@ -209,6 +210,20 @@ def vendor(request):
         else:    
             dash_details = CompanyDetails.objects.get(login_details=log_details)
         allmodules= ZohoModules.objects.get(company=dash_details,status='New')
+        # net_30_exists = Company_Payment_Term.objects.filter(company=dash_details, term_name='NET 30').exists()
+
+        # net_60_exists = Company_Payment_Term.objects.filter(company=dash_details, term_name='NET 60').exists()
+
+        # if not net_30_exists:
+        #     normalized_data='NET30'
+        #     pay_tm = add_space_before_first_digit(normalized_data)
+
+        #     Company_Payment_Term.objects.create(company=dash_details, term_name='NET 30',days=30)
+
+        # if not net_60_exists:
+        #     normalized_data='NET60'
+        #     pay_tm = add_space_before_first_digit(normalized_data)
+        #     Company_Payment_Term.objects.create(company=dash_details, term_name='NET 60',days=60)
         comp_payment_terms=Company_Payment_Term.objects.filter(company=dash_details)
         if log_details.user_type=='Staff':
 
@@ -217,6 +232,64 @@ def vendor(request):
             return render(request,'zohomodules/vendor/create_vendor.html',{'details':dash_details,'allmodules': allmodules,'comp_payment_terms':comp_payment_terms,'log_details':log_details}) 
     else:
         return redirect('/')
+    
+def check_term_exist(request):
+    if request.method == 'GET':
+       term_name = request.GET.get('term_name', None)
+       if term_name:
+            normalized_data = term_name.replace(" ", "")
+            term_name_processed = add_space_before_first_digit(normalized_data)
+            exists = Company_Payment_Term.objects.filter(
+                    term_name=term_name_processed
+                ).exists()
+            return JsonResponse({'exists': exists})          
+    else:
+        return JsonResponse({'exists': False})
+    
+
+def check_email_exist(request):
+    if request.method == 'GET':
+       vendoremail = request.GET.get('vendor_email', None)
+
+       if vendoremail:
+          
+            exists = Vendor.objects.filter(
+                    vendor_email=vendoremail
+                ).exists()
+            return JsonResponse({'exists': exists})          
+    else:
+        return JsonResponse({'exists': False})
+    
+
+
+
+def check_work_phone_exist(request):
+    if request.method == 'GET':
+       wPhone = request.GET.get('w_Phone', None)
+
+       if wPhone:
+          
+            exists = Vendor.objects.filter(
+                    phone=wPhone
+                ).exists()
+            return JsonResponse({'exists': exists})          
+    else:
+        return JsonResponse({'exists': False})
+    
+
+def check_phonenumber_exist(request):
+    if request.method == 'GET':
+       mPhone = request.GET.get('m_Phone', None)
+
+       if mPhone:
+          
+            exists = Vendor.objects.filter(
+                    mobile=mPhone
+                ).exists()
+            return JsonResponse({'exists': exists})          
+    else:
+        return JsonResponse({'exists': False})
+
 
 def view_vendor_list(request):
     if 'login_id' in request.session:
@@ -522,10 +595,18 @@ def import_vendor_excel(request):
                 excel_b = load_workbook(excel_bill)
                 eb = excel_b['Sheet1']
                 for row_number1 in range(1, eb.max_row + 1):
+                    
+                            
                     vendorsheet = [eb.cell(row=row_number1, column=col_num).value for col_num in range(1, eb.max_column + 1)]
+                    comp_term=vendorsheet[16]
+                    pay_tm = add_space_before_first_digit(comp_term)
+                    try:
+                        com_term_obj=Company_Payment_Term.objects.get(company=dash_details,term_name=pay_tm)
+                    except Company_Payment_Term.DoesNotExist:
+                        com_term_obj= None
                     Vendor_object=Vendor(title=vendorsheet[0],first_name=vendorsheet[1],last_name=vendorsheet[2],company_name=vendorsheet[3],vendor_email=vendorsheet[4],phone=vendorsheet[5],mobile=vendorsheet[6],skype_name_number=vendorsheet[7],designation=vendorsheet[8],department=vendorsheet[9],website=vendorsheet[10],
                                          gst_treatment=vendorsheet[11],source_of_supply=vendorsheet[12],currency=vendorsheet[13],opening_balance_type=vendorsheet[14],
-                                         opening_balance=vendorsheet[15],payment_term=vendorsheet[16],billing_attention=vendorsheet[17],billing_address=vendorsheet[18],
+                                         opening_balance=0.00,payment_term=com_term_obj,billing_attention=vendorsheet[17],billing_address=vendorsheet[18],
                                          billing_city=vendorsheet[19],billing_state=vendorsheet[20],billing_country=vendorsheet[21],billing_pin_code=vendorsheet[22],
                                          billing_phone=vendorsheet[23],billing_fax=vendorsheet[24],shipping_attention=vendorsheet[25],shipping_address=vendorsheet[26],shipping_city=vendorsheet[27],
                                          shipping_state=vendorsheet[28],shipping_country=vendorsheet[29],shipping_pin_code=vendorsheet[30],
@@ -808,7 +889,7 @@ def vendor_shareemail(request,pk):
                 vendor_obj=Vendor.objects.get(id=pk)
                         
                 context = {'vendor_obj':vendor_obj}
-                template_path = 'vendor/vendormailoverview.html'
+                template_path = 'zohomodules/vendor/vendormailoverview.html'
                 template = get_template(template_path)
                 html  = template.render(context)
                 result = BytesIO()
@@ -816,10 +897,10 @@ def vendor_shareemail(request,pk):
                 pdf = result.getvalue()
                 filename = f'{vendor_obj.first_name}details - {vendor_obj.id}.pdf'
                 subject = f"{vendor_obj.first_name}{vendor_obj.last_name}  - {vendor_obj.id}-details"
-                email = EmailMessage(subject, f"Hi,\nPlease find the attached vendor details - File-{vendor_obj.first_name}{vendor_obj.last_name} .\n--\nRegards,\n", from_email=settings.EMAIL_HOST_USER, to=emails_list)
+                email = EmailMessage(subject, f"Hi,\nPlease find the attached transaction details - File-{vendor_obj.first_name} {vendor_obj.last_name} .\n--\nRegards,\n", from_email=settings.EMAIL_HOST_USER, to=emails_list)
                 email.attach(filename, pdf, "application/pdf")
                 email.send(fail_silently=False)
-                messages.success(request, 'over view page has been shared via email successfully..!')
+                messages.success(request, 'Transaction has been shared via email successfully..!')
                 return redirect('view_vendor_details',pk)
     except Exception as e:
             print(e)
@@ -844,7 +925,9 @@ def payment_terms_add(request):
         if request.method == 'POST':
             terms = request.POST.get('name')
             day = request.POST.get('days')
-            ptr = Company_Payment_Term(term_name=terms, days=day, company=dash_details)
+            normalized_data = terms.replace(" ", "")
+            pay_tm = add_space_before_first_digit(normalized_data)
+            ptr = Company_Payment_Term(term_name=pay_tm, days=day, company=dash_details)
             ptr.save()
             payterms_obj = Company_Payment_Term.objects.filter(company=dash_details).values('id', 'term_name')
 
@@ -859,5 +942,9 @@ def payment_terms_add(request):
         else:
             return JsonResponse({'error': 'Invalid request'}, status=400)   
             
-
+def add_space_before_first_digit(data):
+    for index, char in enumerate(data):
+        if char.isdigit():
+            return data[:index] + ' ' + data[index:]
+    return data
 #---------------------------------------End----------------------------------------------------------------            

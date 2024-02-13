@@ -128,9 +128,19 @@
 
        
         <div class="row mt-2">
+<style>
+  .example::-webkit-scrollbar {
+    display: none;
+}
 
+/* Hide scrollbar for IE, Edge and Firefox */
+.example {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+</style>
         
-          <div class="table-responsive">
+          <div class="table-responsive example">
             <table class="table  text-white" id="myTable" >
               <thead>
                 <tr>
@@ -146,7 +156,7 @@
                   <th style="text-align: center;">STATUS</th>
 
                   <th style="text-align: center;">BALANCE</th>
-                  <th style="text-align: center;">DELETE</th>
+                  <!-- <th style="text-align: center;">DELETE</th> -->
 
                 </tr>
                
@@ -176,7 +186,7 @@
                   <td>{{v.vendor_status}}</td>
                  
                   <td>{{v.current_balance}}</td>
-                  <td><a href="{% url 'delete_vendor' v.id %}" onclick="alert('Do You Want to Delete?')"><i class="fas fa-trash text-danger text-center"></i></a></td>
+                  <!-- <td><a href="{% url 'delete_vendor' v.id %}" onclick="alert('Do You Want to Delete?')"><i class="fas fa-trash text-danger text-center"></i></a></td> -->
 
   
                  
@@ -188,34 +198,7 @@
 
             
           </div>
-          <!-- <div class="pagination pagination-box ">
-            <div>
-              <p class="text-muted ml-3">Showing {{ data.start_index }} to {{ data.end_index }} of {{ data.paginator.count }} entries</p>
-            </div>
-            <div>
-                
-              <ul class="pagination separated pagination-danger pagination-ul">
-                  {% if data.has_previous %}
-                      <li class="page-item"><a class="page-link" href="?page=1">&laquo;&laquo;</a></li>
-                      <li class="page-item"><a class="page-link" href="?page={{ data.previous_page_number }}">&laquo;</a></li>
-                  {% endif %}
           
-                  {% for i in data.paginator.page_range %}
-                    {% if i > data.number|add:'-3' and i < data.number|add:'3' %}
-                        <li class="page-item{% if data.number == i %} active{% endif %}">
-                            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-          
-                  {% if data.has_next %}
-                      <li class="page-item"><a class="page-link" href="?page={{ data.next_page_number }}">&raquo;</a></li>
-                      <li class="page-item"><a class="page-link" href="?page={{ data.paginator.num_pages }}">&raquo;&raquo;</a></li>
-                  {% endif %}
-              </ul>
-            </div>
-            
-        </div> -->
         </div>
        
         <div class="row" hidden>

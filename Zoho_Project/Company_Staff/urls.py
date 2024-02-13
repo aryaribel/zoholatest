@@ -43,6 +43,13 @@ urlpatterns = [
     path('vendor_shareemail/<int:pk>',views.vendor_shareemail,name='vendor_shareemail'),
     path('payment_terms_add',views.payment_terms_add,name='payment_terms_add'),
     path('add_vendor_file/<int:pk>',views.add_vendor_file,name='add_vendor_file'),
+    path('check_term_exist',views.check_term_exist,name='check_term_exist'),
+    path('check_email_exist',views.check_email_exist,name='check_email_exist'),
+    path('check_work_phone_exist',views.check_work_phone_exist,name='check_work_phone_exist'),
+    path('check_phonenumber_exist',views.check_phonenumber_exist,name='check_phonenumber_exist'),
+    
+    
+    
 
 #------------------------------End---------------------------------------------------------
 

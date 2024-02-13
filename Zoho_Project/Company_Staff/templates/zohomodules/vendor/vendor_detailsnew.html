@@ -1,14 +1,64 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-  integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-  integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-  crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"referrerpolicy="no-referrer" />
+
+
 <style>
+  .icon-box
+  {
+    text-align: end;
+  }
+  .overview-head
+  {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-bottom: 2px solid #6b6b6b;
+    margin-bottom: 1rem;
+    padding: 0.70rem;
+   
+  }
+  @media (max-width:700px)
+  {
+    .icon-box
+    {
+      text-align: center;
+      padding-top: 0.60rem;
+    }
+    .btn-box
+    {
+      justify-content: center;
+    }
+    .overview-head
+    {
+      display: grid;
+      align-items: start;
+      grid-template-columns: 1fr 2fr 1fr;
+    }
+    .overview-head h4
+    {
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .overview-head p
+    {
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+    .overview-head p span 
+    {
+      font-size: 0.65rem;
+    }
+    .gen-info p
+    {
+      font-size: 0.85rem;
+    }
+    .p-info p{
+      font-size: 0.75rem;
+    }
+  }
   @media print {
     body {
       visibility: hidden !important;
@@ -27,6 +77,10 @@
     }
   }
 </style>
+
+<!---------------------------------------------------------------------------------------------------->
+
+
 <div class="body-wrapper">
   <div class="container-fluid text-light">
     <nav aria-label="breadcrumb">
@@ -40,21 +94,22 @@
         <li class="breadcrumb-item" aria-current="page">Over view</li>
       </ol>
     </nav>
-    <div class="row mt-5">
-      <div class="col-sm-12 col-lg-12 flex-column">
-        <div class="card mb-3 bg-black shadow p-3 mb-5 rounded" style="max-width: 1200px;">
+
+    <div class="row mt-4">
+      <div class="col-sm-12 col-lg-12 ">
+        <div class="card mb-3 bg-black shadow p-3 mb-5 rounded">
           <div class="row mt-4">
-            <div class="col-sm flex-column">
+            <div class="col-sm ">
               <div class="row">
                 <div class="row">
                   <a class="text-white" style="font-size: 1.5rem;">Vendors</a>
                 </div>
-                <div class="row">
-                  <div class="col-sm-3 col-lg-7">
+                <div class="row g-2">
+                  <div class="col-sm-12 col-md-7 col-lg-7">
                     <input type="text" id="search" class="form-control bg-light text-dark " placeholder="Search.."
                       autocomplete="off">
                   </div>
-                  <div class="col-sm-4 col-lg-5 " style="text-align: right; float: right;">
+                  <div class="col-sm-12  col-md-5  col-lg-5 " style="text-align: right; float: right;">
                     <a class="btn text-center  btn-outline-warning btn-sm" id="sortbutton" data-bs-toggle="dropdown"
                       aria-haspopup="true" aria-expanded="false" role="button">
                       <i class="fas fa-sort "></i>
@@ -70,13 +125,16 @@
                       aria-haspopup="true" aria-expanded="false" role="button">
                       <i class="fas fa-filter "></i>
                     </a>
+
                     <div class="dropdown-menu m-1 ">
                       <a class="dropdown-item" href="{% url 'view_vendor_list' %}">All</a>
                       <a class="dropdown-item" href="{% url 'view_vendor_active' %}">Active</a>
                       <a class="dropdown-item" href="{% url 'view_vendor_inactive' %}">Inactive</a>
                     </div>
                     <a class="btn btn btn-outline-warning btn-sm " style="text-align: right;"
-                      href="{% url 'vendor' %}"><i class="fa fa-plus "></i></a>
+                      href="{% url 'vendor' %}"><i class="fa fa-plus "></i>
+                    </a>
+
                   </div>
                 </div>
               </div>
@@ -110,6 +168,7 @@
                 </div>
               </div>
             </div>
+
             <div class="col-lg-8">
               <div id="overviewdiv">
                 <div class="row ">
@@ -119,129 +178,135 @@
                     </a>
                   </div>
                 </div>
-                <div class="row mt-2">
+
+                <div class="row mt-2 g-2">
                   <!-- <div class="col-md-2" > -->
                   <style>
                     .mrl-2 {
                       margin-right: 0.75rem
                     }
                   </style>
-                  <div class="col-sm-12 col-md-4 col-lg-12 d-flex ">
+                  <div class="col-sm-12 col-md-6 col-lg-6 d-flex btn-box ">
                     <div onclick="fieldset1_function()" class="btn btn-warning d-flex mrl-2"
                       style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">
                       <span>
                         <i class="fas fa-eye ml-1"></i> Overview</span>
                     </div>
-                    <div onclick="fieldset8_function()" class="btn mrl-2" style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-                            background-color: rgb(78, 77, 77);"><span><i class="fas fa-file-alt ml-1"></i>
+                    <div onclick="fieldset8_function()" class="btn btn-warning mrl-2" style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;"><span><i class="fas fa-file-alt ml-1"></i>
                         Transactions</span> </div>
                   </div>
 
+                  <div class="col-md-6 col-lg-6 col-sm-12 icon-box">
 
+                    <div id="overview-icons" class="">
 
-                  <!-- <a class="btn bg-warning text-light btn-sm" ><i class="fas fa-eye"></i> Overview</a>
+                        <a href="{% url 'Vendor_edit' vendor_obj.id %} " class=" text-dark">
+                          <button class="btn btn-outline-warning btn-sm" title="Edit"><i class="fas fa-edit"></i></button>
+                        </a>
+                        
+                        
+                        <a class="btn btn-outline-warning btn-sm" href="" data-toggle="modal" data-target="#commentModal"
+                          data-toggle="tooltip" title="comment">
+                          <i class="far fa-comment"></i>
+                        </a>
+                        {% if p.uploaded_file %}
+                        <a class="text-dark" href="{{ p.uploaded_file.url }}" download>
+                          <button class="btn btn-outline-warning btn-sm" title="download"><i
+                              class="fas fa-download"></i></button>
+                        </a>
+                        {% else %}
+                        <a class="btn btn-outline-warning btn-sm" href="" data-toggle="modal" title="upload"
+                          data-target="#commentModal3" data-toggle="tooltip" title="comment">
+                          <i class="fa-solid fa-upload"></i>
+                        </a>
+                        {% endif %}
+    
+                        <a href="{% url 'delete_vendors'  vendor_obj.id %}" class="text-dark">
+                          <button class="btn btn-outline-warning btn-sm" title="Delete"><i
+                              class="fas fa-trash-alt"></i></button>
+                        </a>
+                        <a class="btn btn-outline-warning btn-sm" href="{% url 'vendor_status' vendor_obj.id %}"
+                          id="sts">{{vendor_obj.vendor_status}}</a>
+                        <a class="btn btn-outline-warning btn-sm" href="" data-toggle="modal" data-target="#commentModal2"
+                          data-toggle="tooltip" title="history">
+                          <i class="fa-solid fa-clock-rotate-left"></i>
+                        </a>
+                        <!-- <a class="btn btn-outline-warning dropdown-toggle btn-sm" href="#" role="button" title="share"
+                          id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <i class="fa-solid fa-share-nodes"></i>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                          <a class="dropdown-item" href="#" data-toggle="modal" title="upload" data-target="#commentModal4"
+                            data-toggle="tooltip" title="comment">Mail</a>
+                          <a class="dropdown-item" href="#" onclick="shareViaWhatsApp()">whatsapp</a>
                         </div> -->
-                  <div class="col-md-10 col-lg-12 col-sm-12" style="text-align: right; ">
-                    <a href="{% url 'Vendor_edit' vendor_obj.id %} " class=" text-dark">
-                      <button class="btn btn-outline-warning btn-sm" title="Edit"><i class="fas fa-edit"></i></button>
-                    </a>
-                    <a class="text-dark" onclick="exportToPDF()" id="pdflink">
-                      <button class="btn btn-outline-warning btn-sm" title="Pdf"><i
-                          class="fa-solid fa-file-pdf"></i></button>
-                    </a>
-                    <a class=" text-dark" onclick="printSelectedArea()">
-                      <button class="btn btn-outline-warning btn-sm" title="Print"> <i class="fas fa-print"></i>
-                      </button>
-                    </a>
-                    <a class="btn btn-outline-warning btn-sm" href="" data-toggle="modal" data-target="#commentModal"
-                      data-toggle="tooltip" title="comment">
-                      <i class="far fa-comment"></i>
-                    </a>
-                    {% if p.uploaded_file %}
-                    <a class="text-dark" href="{{ p.uploaded_file.url }}" download>
-                      <button class="btn btn-outline-warning btn-sm" title="download"><i
-                          class="fas fa-download"></i></button>
-                    </a>
-                    {% else %}
-                    <a class="btn btn-outline-warning btn-sm" href="" data-toggle="modal" title="upload"
-                      data-target="#commentModal3" data-toggle="tooltip" title="comment">
-                      <i class="fa-solid fa-upload"></i>
-                    </a>
-                    {% endif %}
 
-                    <a href="{% url 'delete_vendors'  vendor_obj.id %}" class="text-dark">
-                      <button class="btn btn-outline-warning btn-sm" title="Delete"><i
-                          class="fas fa-trash-alt"></i></button>
-                    </a>
-                    <a class="btn btn-outline-warning btn-sm" href="{% url 'vendor_status' vendor_obj.id %}"
-                      id="sts">{{vendor_obj.vendor_status}}</a>
-                    <a class="btn btn-outline-warning btn-sm" href="" data-toggle="modal" data-target="#commentModal2"
-                      data-toggle="tooltip" title="history">
-                      <i class="fa-solid fa-clock-rotate-left"></i>
-                    </a>
-                    <a class="btn btn-outline-warning dropdown-toggle btn-sm" href="#" role="button" title="share"
-                      id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fa-solid fa-share-nodes"></i>
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                      <a class="dropdown-item" href="#" data-toggle="modal" title="upload" data-target="#commentModal4"
-                        data-toggle="tooltip" title="comment">Mail</a>
-                      <a class="dropdown-item" href="#" onclick="shareViaWhatsApp()">whatsapp</a>
+                    </div>
+                    <div id="transation-icons" style="display: none;">
+                      <a class="text-dark" onclick="exportToPDF()" id="pdflink">
+                        <button class="btn btn-outline-warning btn-sm" title="Pdf"><i
+                            class="fa-solid fa-file-pdf"></i></button>
+                      </a>
+                      <a class=" text-dark" onclick="printSelectedArea()">
+                        <button class="btn btn-outline-warning btn-sm" title="Print"> <i class="fas fa-print"></i>
+                        </button>
+                      </a>
+                     
+                      <a class="btn btn-outline-warning dropdown-toggle btn-sm" href="#" role="button" title="share"
+                        id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa-solid fa-share-nodes"></i>
+                      </a>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="#" data-toggle="modal" title="upload" data-target="#commentModal4"
+                          data-toggle="tooltip" title="comment">Mail</a>
+                        <a class="dropdown-item" href="#" onclick="shareViaWhatsApp()">whatsapp</a>
+                      </div>
                     </div>
                   </div>
 
-                </div><br>
+                </div>
 
-                <div id="printdiv" style="color:black;">
-                  <div class="row " id="div-to-pdf"
-                    style="background-color: #acaaaafd; margin-left:1px; margin-right: 1rem; ">
-                    <br>
+                <div id="printdiv" style="color:black;" class="mt-3">
+
+                  <div  class="p-2" id="div-to-pdf" style="background-color: #acaaaafd;">
+                   
                     <div id="overview">
-                      <div class="row">
-                        <div class="col-3 mt-3">
-
-                          <label style="font-size: medium; "><b>{{vendor_obj.company_name}}</b></label>
-
-
+                      <div class="overview-head">
+                        <div class="">
+                          <p>{{vendor_obj.company_name}}</p>
                         </div>
-                        <div class="col-6 mt-3">
-                          <div class="row text-center">
-                            <h2>Vendor Details</h2>
-                          </div>
+
+                        <div class="">
+                           <h4>Vendor Details</h4>
                         </div>
-                        <div class="col-3 mt-3" style="text-align: right;">
-                          <label style="font-size: medium;"><b>Status : {{vendor_obj.vendor_status}}</b></label><br>
+
+                        <div class="">
+                          <p><span> Status : {{vendor_obj.vendor_status}}</span> </p>
                         </div>
+
                       </div>
-                      <div class="row text-center">
-                        <h2>
-                          <hr>
-                        </h2>
-                      </div>
-                      <div class="row">
-                        <div class="gen-info col-6 " style="padding-left: 3rem;  ">
-                          <div class="row mt-1">
-                            <div class="col-2"></div>
-                            <div class="col-6" style="text-align: center; ">
-                              <a href=" ">
 
-                                <br><br>
-                                <p class="text-dark fs-5 b">{{vendor_obj.title}} &nbsp;{{vendor_obj.first_name}}
-                                  &nbsp;{{vendor_obj.last_name}}
+                     
+                      <div class="row ">
+                        <div class="gen-info col-md-6 col-lg-6 col-sm-12 ">
+                            <div class="d-flex justify-content-center pt-3">
+                                  <p class="text-dark fs-5 ">
+                                    <b>
+                                      {{vendor_obj.title}} &nbsp;{{vendor_obj.first_name}} &nbsp;{{vendor_obj.last_name}}
+                                    </b>
+                                  </p>   
+                            </div>
+                         
+                            <div class="row mt-1">
+                              <div class="col-5 ">
+                                <p > Email : </p>
+                              </div>
+                              <div class="col-7">
+                                <p class="bold" style="max-width: 15rem;word-wrap: break-word;">
+                                  {{vendor_obj.vendor_email}}
                                 </p>
-                              </a>
+                              </div>
                             </div>
-                          </div><br>
-                          <div class="row mt-1">
-                            <div class="col-5">
-                              <p for=""> Email : </p>
-                            </div>
-                            <div class="col-7">
-                              <p class="bold" style="max-width: 15rem;word-wrap: break-word;">
-                                {{vendor_obj.vendor_email}}
-                              </p>
-                            </div>
-                          </div>
                           <div class="row mt-2">
                             <div class="col-5">
                               <p for="">Work Phone :</p>
@@ -274,9 +339,8 @@
 
 
                         </div>
-                        <div class="p-info col-6 mr-2">
-                          <div class="card "
-                            style="background-color:#383838 ; color:white; padding-left: 1rem; padding-top: 1rem;">
+                        <div class="p-info col-lg-6 col-sm-12 col-md-6 mr-2">
+                          <div class="card " style="background-color:#383838 ; color:white; padding-left: 1rem; padding-top: 1rem;">
                             <div class="h3 mt-4 " style="margin-right: 1vh; color:white">
                               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;General Information
                               <hr style="color: orange;">
@@ -284,7 +348,7 @@
 
                             <div class="row mt-2">
                               <div class="col-5">
-                                <p for="">GST Treatment :</p>
+                                <p >GST Treatment :</p>
                               </div>
                               <div class="col-6">
                                 <p class="bold">{{vendor_obj.gst_treatment}}</p>
@@ -293,7 +357,7 @@
 
                             <div class="row mt-2">
                               <div class="col-5">
-                                <p for="">GST Number :</p>
+                                <p >GST Number :</p>
                               </div>
                               <div class="col-6">
                                 <p class="bold">{{vendor_obj.gst_number}}</p>
@@ -302,7 +366,7 @@
 
                             <div class="row mt-2">
                               <div class="col-5">
-                                <p for="">PAN Number:</p>
+                                <p>PAN Number:</p>
                               </div>
                               <div class="col-6">
                                 <p class="bold">{{vendor_obj.pan_number}}</p>
@@ -364,7 +428,9 @@
                         </div>
                       </div>
                     </div>
+
                     <div id="transactions" style="display: none;background-color:#acaaaafd ">
+
                       <fieldset8 class="p-2">
                         <div class="row text-dark ">
                           <div class="col-md-8">
@@ -389,40 +455,11 @@
                             <thead style="border: 1px solid black;">
                               <tr style="border: 1px solid black;">
 
-                                <th>
-                                  <div class="row">
-                                    <div>TYPE</div>
-                                   
-
-
-                                  </div>
-                                </th>
-                                <th>
-                                  <div class="row">
-                                    <div>NUMBER</div>
-                                   
-                                  </div>
-                                </th>
-
-                                <th>
-                                  <div class="row">
-                                    <div>DATE</div>
-                                   
-                                  </div>
-                                </th>
-                                <th>
-                                  <div class="row">
-                                    <div>TOTAL</div>
-                                    
-                                  </div>
-                                </th>
-
-                                <th>
-                                  <div class="row">
-                                    <div>BALANCE</div>
-                                   
-                                  </div>
-                                </th>
+                               <th>TYPE</th>
+                               <th>NUMBER</th>
+                               <th>DATE</th>
+                               <th>TOTAL</th>
+                               <th>BALANCE</th>
 
 
 
@@ -430,10 +467,10 @@
                             </thead>
                             <tbody>
                               <tr>
-                                <td style="border: 1px solid black;">{{vendor_obj.opening_balance_type}}</td>
+                                <td style="border: 1px solid black;">Opening Balance</td>
                                 <td style="border: 1px solid black;"></td>
-                                <td style="border: 1px solid black;"></td>
-                                <td style="border: 1px solid black;"></td>
+                                <td style="border: 1px solid black;">{% now 'd-m-y' %}</td>
+                                <td style="border: 1px solid black;">{{vendor_obj.opening_balance}}</td>
                                 <td style="border: 1px solid black;">{{vendor_obj.opening_balance}}</td>
 
                               </tr>
@@ -443,9 +480,15 @@
 
                       </fieldset8>
                     </div>
+
                   </div>
                 </div>
               </div>
+            </div>
+
+                    
+
+               
 
 
 
@@ -614,25 +657,35 @@
 </div>
 
 
+<!---------------------------------------------------------------------------------------------------->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 
 <script>
 
   function fieldset1_function() {
     document.getElementById("overview").style.display = "block";
     document.getElementById("transactions").style.display = "none";
-
+    document.getElementById("overview-icons").style.display = "block";
+    document.getElementById("transation-icons").style.display = "none";
+    
   }
 
 
   function fieldset8_function() {
     document.getElementById("overview").style.display = "none";
+    document.getElementById("overview-icons").style.display = "none";
     document.getElementById("transactions").style.display = "block";
-
-
-
+    document.getElementById("transation-icons").style.display = "block";
+    
   }
 
 </script>
+
 <script>
   function shareViaWhatsApp() {
     // Replace 'Hello, this is a shared message!' with your desired message
@@ -645,18 +698,18 @@
     window.open(whatsappLink, '_blank');
   }
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
 <script>
   function exportToPDF() {
     console.log("myTable1");
 
     // Use the correct selector to get the element by ID
-    var element = document.getElementById('div-to-pdf')
+    var element = document.getElementById('transactiondata')
 
     var opt =
     {
       margin: 0.5,
-      filename: 'overviewpage' + '.pdf',
+      filename: 'transaction' + '.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 4 },
       jsPDF: { unit: 'cm', format: 'letter', orientation: 'portrait', }
@@ -669,7 +722,7 @@
 
 <script>
   function printSelectedArea() {
-    var printContents = $("#printdiv").clone(); // Clone the content-div to avoid modifying the original content
+    var printContents = $("#transactiondata").clone(); // Clone the content-div to avoid modifying the original content
     printContents.find('.hideon-print').remove(); // Remove columns by class name
 
     var $printerDiv = $('<div class="printContainer" id=printContainer></div>');
@@ -764,7 +817,7 @@
     }
   }
 </script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 <script>
   {% for msg in messages %}
   swal({
@@ -775,24 +828,6 @@
   {% endfor %}
 </script>
 
-<!-- <script>
-  document.addEventListener("DOMContentLoaded", function() {
-      const filterButton = document.querySelector(".filter-button");
-      const filterDropdown = document.querySelector(".filter-dropdown");
-
-      // Initially hide the filter dropdown
-      filterDropdown.style.display = "none";
-
-      // Toggle display of filter dropdown when filter button is clicked
-      filterButton.addEventListener("click", function() {
-          if (filterDropdown.style.display === "none") {
-              filterDropdown.style.display = "block";
-          } else {
-              filterDropdown.style.display = "none";
-          }
-      });
-  });
-</script> -->
 
 
 {% endblock %}
