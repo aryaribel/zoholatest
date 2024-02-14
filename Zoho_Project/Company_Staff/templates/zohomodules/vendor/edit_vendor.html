@@ -152,6 +152,8 @@
                         <div class="col-sm-12 col-md-3 col-lg-3">
                             <input id="workphone" type="text" class="form-control bg-light text-dark" pattern="[0-9]{7}"
                                 name="w_phone" placeholder="work phone" value="{{vendor_obj.phone}}" required>
+                                <span id="work-phone-message" class="mt-2 " style="font-size: 10px;"></span >
+
                                 <span id="workphone_label" class="mt-2 text-danger" style="font-size: 10px;"></span >
 
                             <div class="invalid-feedback">Please fill out this field.</div>
@@ -159,8 +161,10 @@
                         </div>
                         <div class=" col-sm-12 col-md-3 col-lg-3">
                             <input id="mphone" type="text" pattern="[0-9]{10}" class="form-control bg-light text-dark"
-                                onclick="work_phone()" name="m_phone" placeholder="mobile number"
+                                 name="m_phone" placeholder="mobile number"
                                 value="{{vendor_obj.mobile}}" required>
+                                <span id="phone-message" class="mt-2 " style="font-size: 10px;"></span >
+
                                 <span id="mphone_label" class="mt-2 text-danger" style="font-size: 10px;"></span >
 
                             <div class="invalid-feedback">Please fill out this field.</div>
@@ -219,7 +223,7 @@
                         <div class="col-sm-12 col-md-3 col-lg-3 col-form-label"><label>Website</label></div>
                         <div class="col-sm-12 col-md-6 col-lg-6">
                             <input id="web" type="text" class="form-control bg-light text-dark" onclick="mobile_phone()"
-                                value="{{vendor_obj.website}}" name="website" required>
+                                value="{{vendor_obj.website}}" name="website">
                         </div>
                     </div>
 
@@ -439,7 +443,7 @@
                             <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white"> Payment Terms</label>
 
                             <div class=" col-sm-12 col-md-3 col-lg-3">
-                                <select name="payment_terms" id="PLACE" class="form-control bg-light text-dark">
+                                <select name="payment_terms" id="paytearm-select" class="form-control bg-light text-dark">
 
                                     <option value="{{vendor_obj.payment_term.id}}" selected>{{vendor_obj.payment_term.term_name}}</option>
 
@@ -452,6 +456,13 @@
 
                             </div>
 
+
+
+                            <div class="col-md-4 ">
+                                <a href="#" class="btn btn-outline-secondary py-2 my-1" data-target="#newpayment" data-toggle="modal" style="color: white; background-color: rgb(210, 132, 30);" >+</a>
+                            </div>
+                        
+    
 
                         </div>
 
@@ -722,7 +733,7 @@
 
 
 
-
+ 
 
 
                   
@@ -771,6 +782,67 @@
 
 
                 </form>
+
+
+                <!--------------- Payments Seciton Start ----------------->
+
+ <div class="modal fade" id="newpayment">
+    <div class="modal-dialog modal-md">
+    <div class="modal-content" style="background: rgb(32, 35, 37);border-radius: 20px;">
+        <div class="modal-header " style="background: rgb(32, 35, 37);">
+            <h3 class="m-3 text-uppercase" style="color: white;">Add Payment Term</h3>
+            <button type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" style="background: rgb(32, 35, 37);">
+        <div class="card p-3 m-3" style="background-color: #141414a2;">
+            <form action="" method="post" class="needs-validation" novalidate autocomplete="off" id="modalPayment_terms">
+            
+
+
+            <div class="row mt-2">
+
+                <div class="col-lg-12 col-md-12 col-sm-12 mt-2">
+                    <label for="termname" style="color: white">Term Name *</label>
+
+                <input type="text " class="form-control text-dark bg-light mt-2" id="tname" name="term_name" autocapitalize="characters" required> 
+                <span id="message-id" class="mt-1 text-danger" style="font-size: 10px;"></span> 
+                <span id="success-message-id" class=" mt-1 text-success" style="font-size: 10px;"></span>    
+                </div>
+
+                <div class="col-lg-12 col-md-12 col-sm-12 mt-2">
+                    <label for="termdays" style="color: white">Number of Days *</label>
+
+                <input type="number" class="form-control text-dark bg-light mt-2" id="tdays" name="term_days" autocapitalize="characters" required>
+                </div>
+                <div class="col-md-2 mt-2"></div>
+
+            </div>
+            
+            <div class="row mt-5">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="d-flex">
+                    <button class="btn save_btn rounded-pill text-grey w-50 my-1 mx-1 btn-outline-warning "
+                    type="submit" data-dismiss="modal" id="termSave">Save
+                    </button> 
+                    
+
+                    <button type="button" class="close btn save_btn rounded-pill text-grey w-50 my-1 mx-1 btn-outline-warning" 
+                    data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">Cancel</span>
+                    </button>
+                </div>
+                </div>
+            </div>
+            </form>
+        </div>
+        </div>
+    </div>
+    </div>  
+</div> 
+
+<!------------------- Payments  Section End -------------->
 
                 <!-- </div> -->
             </div>
@@ -980,40 +1052,7 @@
 
 
 
-    function work_phone() {
-        var x = document.getElementById("workphone").value;
-        var y = document.getElementById("workphone_label")
-        var expr = /^[0-9]{7}$/;
-        if (!expr.test(x)) {
-            y.style.color = "red";
-            y.innerHTML = "Invalid Phone Number.";
-        }
-        else {
-            y.style.color = "green";
-
-            y.innerHTML = "valid Phone Number.";
-
-        }
-
-
-    }
-
-    function mobile_phone() {
-
-        var a = document.getElementById("mphone").value;
-        var b = document.getElementById("mphone_label");
-        var expr = /^[0-9]{10}$/;
-        if (!expr.test(a)) {
-            b.style.color = "red";
-            b.innerHTML = "Invalid Phone Number.";
-        }
-        else {
-            b.style.color = "green";
-
-            b.innerHTML = "valid Phone Number.";
-
-        }
-    }
+    
 
     function bphone_number() {
         var a1 = document.getElementById("bphone_num").value;
@@ -1138,6 +1177,45 @@
 
 </script>
 
+
+
+<script>
+    $(document).on("click","#termSave",function(){
+   
+
+  $.ajax({
+    type : 'POST',
+    url:"{% url 'payment_terms_add' %}",
+
+    data:{
+        name : $("#tname").val(),
+        days : $("#tdays").val(),
+        
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+        
+      },
+    
+      success: function(response) {
+        $("#tname").val('')
+        $("#tdays").val('')
+        var paytearmSelect = $('#paytearm-select'); 
+          paytearmSelect.empty();  // Clear existing options
+          
+
+          // Add "Select" option
+          paytearmSelect.append('<option value="Due on Receipt" selected>Due on Receipt</option>');
+
+          // Add new options based on the Ajax response
+          $.each(response.payment_list, function(index, pay_terms) {
+            paytearmSelect.append('<option value="' + pay_terms.id + '">' + pay_terms.name + '</option>');
+          });
+        // reloadPayment();
+      },
+  });        
+});
+
+
+</script>
 <script>
     // Get the input element
     const inputElement = document.getElementById("tname");
@@ -1260,6 +1338,35 @@ $('#mphone').on('input', function() {
     });
 });
 
+</script>
+
+
+<script>
+    // Work Phone Number Validation 
+    $(document).ready(function () {
+        $('#workphone').on('input', function () {
+            var inputVal = $(this).val();
+            var expr = /^[0-9]{7}$/;
+            if (expr.test(inputVal)) {
+                $('#work-phone-message').text('Valid work phone number').css('color', 'green');
+            } else {
+                $('#work-phone-message').text('Invalid work phone number').css('color', 'red');
+            }
+        });
+    });
+
+    // Phone Number Validation
+    $(document).ready(function () {
+        $('#mphone').on('input', function () {
+            var inputVal = $(this).val();
+            var expr=/^[0-9]{10}$/;
+            if (expr.test(inputVal)) {
+                $('#phone-message').text('Valid  phone number').css('color', 'green');
+            } else {
+                $('#phone-message').text('Invalid  phone number').css('color', 'red');
+            }
+        });
+    });
 </script>
 
 {% endblock %}

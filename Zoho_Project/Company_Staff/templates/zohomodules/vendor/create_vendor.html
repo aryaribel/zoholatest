@@ -138,14 +138,16 @@
                         <label class="col-form-label text-white">  Vendor phone</label>
                     </div>
                     <div class="col-sm-12 col-md-3 col-lg-3">
-                        <input id="workphone"  type="text" class="form-control bg-light text-dark mt-2" pattern="[0-9]{7}" onclick="work_phone()"  name="w_phone" placeholder="work phone" required>
-                        <span id="workphone_label" class="mt-2" style="font-size: 10px;"></span >
+                        <input id="workphone"  type="text" class="form-control bg-light text-dark mt-2" pattern="[0-9]{7}"  name="w_phone" placeholder="work phone" required>
+                        <span id="work-phone-message" class="mt-2 " style="font-size: 10px;"></span >
+                        <span id="workphone_label" class="mt-2 text-danger" style="font-size: 10px;"></span >
                         <div class="invalid-feedback"></div>   
     
                     </div>
                     <div class=" col-sm-12 col-md-3 col-lg-4">
-                        <input id="mphone"  type="text" pattern="[0-9]{10}" class="form-control bg-light text-dark mt-2" onclick="mobile_phone()"   name="m_phone" placeholder="mobile number" required>
-                        <span id="mphone_label" class="mt-2" style="font-size: 10px;"></span >
+                        <input id="mphone"  type="text" pattern="[0-9]{10}" class="form-control bg-light text-dark mt-2"  name="m_phone" placeholder="mobile number" required>
+                        <span id="phone-message" class="mt-2 " style="font-size: 10px;"></span >
+                        <span id="mphone_label" class="mt-2 text-danger" style="font-size: 10px;"></span >
                         <div class="invalid-feedback"></div>   
     
                     </div>
@@ -925,44 +927,7 @@
 
 
 
-      function work_phone()
-      {
-        var x=document.getElementById("workphone").value;
-        var y=document.getElementById("workphone_label")
-        var expr=/^[0-9]{7}$/;
-        if (!expr.test(x)) {
-            y.style.color="red";
-            y.style.fontSize="0.750rem";
-            y.innerHTML = "The Phone Number you provided is invalid, please provide a 7 digit number and try again.";
-        }
-        else{
-            y.style.color="green";
-            y.style.fontSize="0.750rem";
-            y.innerHTML = "Valid Phone Number.";
-
-        }
-
-
-      }
-
-      function mobile_phone()
-      {
-        
-        var a=document.getElementById("mphone").value;
-        var b=document.getElementById("mphone_label");
-        var expr=/^[0-9]{10}$/;
-        if (!expr.test(a)) {
-            b.style.color="red";
-            b.style.fontSize="0.750rem";
-            b.innerHTML = "Invalid Phone Number.";
-        }
-        else{
-            b.style.color="green";
-            b.style.fontSize="0.750rem";
-            b.innerHTML = "Valid Phone Number.";
-
-        }
-      }
+    
 
       function bphone_number()
       {
@@ -1271,4 +1236,33 @@ $('#mphone').on('input', function() {
 
 </script>
 
+
+
+<script>
+    // Work Phone Number Validation 
+    $(document).ready(function () {
+        $('#workphone').on('input', function () {
+            var inputVal = $(this).val();
+            var expr = /^[0-9]{7}$/;
+            if (expr.test(inputVal)) {
+                $('#work-phone-message').text('Valid work phone number').css('color', 'green');
+            } else {
+                $('#work-phone-message').text('Invalid work phone number').css('color', 'red');
+            }
+        });
+    });
+
+    // Phone Number Validation
+    $(document).ready(function () {
+        $('#mphone').on('input', function () {
+            var inputVal = $(this).val();
+            var expr=/^[0-9]{10}$/;
+            if (expr.test(inputVal)) {
+                $('#phone-message').text('Valid  phone number').css('color', 'green');
+            } else {
+                $('#phone-message').text('Invalid  phone number').css('color', 'red');
+            }
+        });
+    });
+</script>
 {% endblock %}

@@ -102,9 +102,17 @@
                         <a data-toggle="modal" data-target="#importmodal" class="btn text-center pt-2 btn-outline-warning" onclick="sampleexcel()">
                           <i class="fas fa-file-import" style='font-size:18px'></i> <span style="margin-top: 3px;"> Import</span>
                         </a>
+                        <div class="dropdown">
                         <a class="btn text-center  pt-2 btn-outline-warning" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button" >
                           <i class="fa fa-filter mt-1"></i>
                         </a>
+
+                        <div class="dropdown-menu m-1 ">
+                          <a class="dropdown-item" href="{% url 'view_vendor_list' %}">All</a>
+                          <a class="dropdown-item" href="{% url 'view_vendor_active' %}">Active</a>
+                          <a class="dropdown-item" href="{% url 'view_vendor_inactive' %}">Inactive</a>
+                        </div>
+                        </div>
                         <a  class="btn btn-outline-warning text-right px-3 py-2 flex-sm-row" role="button"  href="{% url 'vendor' %}">
                           <i class="fa fa-plus fs-4" ><span> New</span></i>
                         </a>
@@ -115,11 +123,7 @@
                       
                  
                     
-                      <div class="dropdown-menu m-1 ">
-                        <a class="dropdown-item" href="{% url 'view_vendor_list' %}">All</a>
-                        <a class="dropdown-item" href="{% url 'view_vendor_active' %}">Active</a>
-                        <a class="dropdown-item" href="{% url 'view_vendor_inactive' %}">Inactive</a>
-                      </div>
+
                       
                     </div>
                   </div>

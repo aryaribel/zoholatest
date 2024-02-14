@@ -22,6 +22,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 import re
+from decimal import Decimal
 
 # -------------------------------Company section--------------------------------
 
@@ -234,13 +235,29 @@ def vendor(request):
         return redirect('/')
     
 def check_term_exist(request):
+    if 'login_id' in request.session:
+        if request.session.has_key('login_id'):
+            log_id = request.session['login_id']
+           
+        else:
+            return redirect('/')
+    
+        log_details= LoginDetails.objects.get(id=log_id)
+        if log_details.user_type=='Staff':
+            staff_details=StaffDetails.objects.get(login_details=log_details)
+            dash_details = CompanyDetails.objects.get(id=staff_details.company.id)
+
+        else:    
+            dash_details = CompanyDetails.objects.get(login_details=log_details)
+
     if request.method == 'GET':
        term_name = request.GET.get('term_name', None)
        if term_name:
             normalized_data = term_name.replace(" ", "")
             term_name_processed = add_space_before_first_digit(normalized_data)
             exists = Company_Payment_Term.objects.filter(
-                    term_name=term_name_processed
+                    term_name=term_name_processed,
+                    company=dash_details
                 ).exists()
             return JsonResponse({'exists': exists})          
     else:
@@ -594,8 +611,7 @@ def import_vendor_excel(request):
                 excel_bill = request.FILES['empfile']
                 excel_b = load_workbook(excel_bill)
                 eb = excel_b['Sheet1']
-                for row_number1 in range(1, eb.max_row + 1):
-                    
+                for row_number1 in range(2, eb.max_row + 1):
                             
                     vendorsheet = [eb.cell(row=row_number1, column=col_num).value for col_num in range(1, eb.max_column + 1)]
                     comp_term=vendorsheet[16]
@@ -604,13 +620,15 @@ def import_vendor_excel(request):
                         com_term_obj=Company_Payment_Term.objects.get(company=dash_details,term_name=pay_tm)
                     except Company_Payment_Term.DoesNotExist:
                         com_term_obj= None
+                    opn_blc_str = vendorsheet[15]  # Assuming vendorsheet[15] is a string representing a decimal
+                    opn_blc = Decimal(opn_blc_str)
                     Vendor_object=Vendor(title=vendorsheet[0],first_name=vendorsheet[1],last_name=vendorsheet[2],company_name=vendorsheet[3],vendor_email=vendorsheet[4],phone=vendorsheet[5],mobile=vendorsheet[6],skype_name_number=vendorsheet[7],designation=vendorsheet[8],department=vendorsheet[9],website=vendorsheet[10],
                                          gst_treatment=vendorsheet[11],source_of_supply=vendorsheet[12],currency=vendorsheet[13],opening_balance_type=vendorsheet[14],
-                                         opening_balance=0.00,payment_term=com_term_obj,billing_attention=vendorsheet[17],billing_address=vendorsheet[18],
+                                         opening_balance=opn_blc,payment_term=com_term_obj,billing_attention=vendorsheet[17],billing_address=vendorsheet[18],
                                          billing_city=vendorsheet[19],billing_state=vendorsheet[20],billing_country=vendorsheet[21],billing_pin_code=vendorsheet[22],
                                          billing_phone=vendorsheet[23],billing_fax=vendorsheet[24],shipping_attention=vendorsheet[25],shipping_address=vendorsheet[26],shipping_city=vendorsheet[27],
                                          shipping_state=vendorsheet[28],shipping_country=vendorsheet[29],shipping_pin_code=vendorsheet[30],
-                                         shipping_phone=vendorsheet[31], shipping_fax=vendorsheet[32], remarks=vendorsheet[33],company=dash_details,login_details=log_details)
+                                         shipping_phone=vendorsheet[31], shipping_fax=vendorsheet[32], remarks=vendorsheet[33],vendor_status="Active",company=dash_details,login_details=log_details)
                     Vendor_object.save()
 
     
@@ -734,11 +752,19 @@ def do_vendor_edit(request,pk):
             vendor_history_obj.save()
     # .......................................................adding to remaks table.....................
             vdata=Vendor.objects.get(id=vendor_data.id)
-            rdata=Vendor_remarks_table.objects.get(vendor=vdata)
-            rdata.remarks=request.POST['remark']
-            rdata.company=dash_details
-            rdata.vendor=vdata
-            rdata.save()
+            try:
+
+                rdata=Vendor_remarks_table.objects.get(vendor=vdata)
+                rdata.remarks=request.POST['remark']
+                rdata.company=dash_details
+                rdata.vendor=vdata
+                rdata.save()
+            except Vendor_remarks_table.DoesNotExist:
+                remarks_obj= Vendor_remarks_table()   
+                remarks_obj.remarks=request.POST['remark']
+                remarks_obj.company=dash_details
+                remarks_obj.vendor=vdata
+                remarks_obj.save()
 
 
     #  ...........................adding multiple rows of table to model  ........................................................  
