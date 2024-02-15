@@ -6,6 +6,11 @@
 
 
 <style>
+  .T-Balance
+  {
+    color: #1e0a0a;
+    font-weight: 800;
+  }
   .icon-box
   {
     text-align: end;
@@ -76,6 +81,26 @@
       height: 10%;
     }
   }
+
+    .h-72
+    {
+      max-height: 72vh;
+      overflow-y: scroll;
+    }
+    .sroll-bar::-webkit-scrollbar {
+      width: 3px; /* Width of the scrollbar */
+    }
+    
+    /* Track */
+    .sroll-bar::-webkit-scrollbar-track {
+      background: #242424; /* Color of the scrollbar track */
+    }
+    
+    /* Handle */
+    .sroll-bar::-webkit-scrollbar-thumb {
+      background: #a7a7a7; /* Color of the scrollbar handle */
+      height: 1px;
+    }
 </style>
 
 <!---------------------------------------------------------------------------------------------------->
@@ -139,28 +164,31 @@
                 </div>
               </div>
 
+            
 
               <div class="row">
-                <div class="table-responsive scrollable-table">
-                  <table class="table  text-white" id="myTable">
+                <div class="table-responsive sroll-bar h-72" >
+                  <table class="table  text-white mt-3" id="myTable">
                     <tbody>
 
 
+                      {% for vendor_in in vendor_objs %}
+                      <tr class="clickable-row" data-href="{% url 'view_vendor_details' vendor_in.id %}">
 
-                      <tr class="clickable-row" data-href="{% url 'view_vendor_details' vendor_obj.id %}">
                         <td>
                           <div class="row">
                             <div class="col-md-6">
-                              <h5 style="color: white;">{{vendor_obj.first_name}} {{vendor_obj.last_name}}</h5>
+                              <h6 style="color: rgb(241, 240, 240);">{{vendor_in.first_name}} {{vendor_in.last_name}}</h6>
                             </div>
-                            <div class="col-md-6 " style="text-align: right;">&#x20B9; {{ vendor_obj.opening_balance }}
+                            <div class="col-md-6 " style="text-align: right;">&#x20B9; {{ vendor_in.opening_balance }}
                             </div>
                           </div>
-                          <p>{{vendor_obj.vendor_email}}</p>
+                          <p>{{vendor_in.vendor_email}}</p>
 
                         </td>
 
                       </tr>
+                      {% endfor %}
 
 
                     </tbody>
@@ -471,7 +499,7 @@
                                 <td style="border: 1px solid black;"></td>
                                 <td style="border: 1px solid black;">{% now 'd-m-y' %}</td>
                                 <td style="border: 1px solid black;">{{vendor_obj.opening_balance}}</td>
-                                <td style="border: 1px solid black;">{{vendor_obj.opening_balance}}</td>
+                                <td style="border: 1px solid black;"><span class="T-Balance">{{vendor_obj.opening_balance}}</span></td>
 
                               </tr>
                             </tbody>
@@ -667,6 +695,20 @@
 
 <script>
 
+  document.addEventListener("DOMContentLoaded", function() {
+    // Add click event listeners to all elements with class "clickable-row"
+    var rows = document.querySelectorAll(".clickable-row");
+    rows.forEach(function(row) {
+      row.addEventListener("click", function() {
+        // Get the URL from the data-href attribute
+        var url = this.getAttribute("data-href");
+        // Redirect to the URL
+        window.location.href = url;
+      });
+    });
+  });
+  
+
   function fieldset1_function() {
     document.getElementById("overview").style.display = "block";
     document.getElementById("transactions").style.display = "none";
@@ -704,7 +746,7 @@
     console.log("myTable1");
 
     // Use the correct selector to get the element by ID
-    var element = document.getElementById('transactiondata')
+    var element = document.getElementById('transactions')
 
     var opt =
     {
@@ -722,7 +764,7 @@
 
 <script>
   function printSelectedArea() {
-    var printContents = $("#transactiondata").clone(); // Clone the content-div to avoid modifying the original content
+    var printContents = $("#transactions").clone(); // Clone the content-div to avoid modifying the original content
     printContents.find('.hideon-print').remove(); // Remove columns by class name
 
     var $printerDiv = $('<div class="printContainer" id=printContainer></div>');

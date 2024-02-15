@@ -262,7 +262,34 @@ def check_term_exist(request):
             return JsonResponse({'exists': exists})          
     else:
         return JsonResponse({'exists': False})
+
+
+# Check Pan Number Exist or Not
+def check_pan(request):
+    if request.method == 'POST':
+        panNumber = request.POST.get('panNumber')
+        pan_exists = Vendor.objects.filter(pan_number=panNumber).exists()
+
+        if pan_exists:
+            return JsonResponse({'status': 'exists'})
+        else:
+            return JsonResponse({'status': 'not_exists'})
+    else:
+        return JsonResponse({'error': 'Invalid request'}) 
     
+
+# Check GST Number Exist or Not
+def check_gst(request):
+    if request.method == 'POST':
+        gstNumber = request.POST.get('gstNumber')
+        gst_exists = Vendor.objects.filter(gst_number=gstNumber).exists()
+       
+        if gst_exists:
+            return JsonResponse({'status': 'exists'})
+        else:
+            return JsonResponse({'status': 'not_exists'})
+    else:
+        return JsonResponse({'error': 'Invalid request'}) 
 
 def check_email_exist(request):
     if request.method == 'GET':
@@ -277,8 +304,6 @@ def check_email_exist(request):
     else:
         return JsonResponse({'exists': False})
     
-
-
 
 def check_work_phone_exist(request):
     if request.method == 'GET':
@@ -385,6 +410,7 @@ def add_vendor(request):
             vendor_data.website=request.POST['website']
             vendor_data.gst_treatment=request.POST['gst']
             vendor_data.vendor_status="Active"
+            vendor_data.remarks=request.POST['remark']
 
             x=request.POST['gst']
             if x=="Unregistered Business-not Registered under GST":
@@ -575,6 +601,10 @@ def view_vendor_details(request,pk):
         allmodules= ZohoModules.objects.get(company=dash_details,status='New')
 
         vendor_obj=Vendor.objects.get(id=pk)
+
+        # Getting all vendor to disply on the left side of vendor_detailsnew page
+        vendor_objs=Vendor.objects.filter(company=dash_details)
+
         vendor_comments=Vendor_comments_table.objects.filter(vendor=vendor_obj)
         vendor_history=VendorHistory.objects.filter(vendor=vendor_obj)
     
@@ -583,9 +613,10 @@ def view_vendor_details(request,pk):
                
                 'allmodules': allmodules,
                 'vendor_obj':vendor_obj,
-              'log_details':log_details,
-              'vendor_comments':vendor_comments,
-              'vendor_history':vendor_history,
+                'log_details':log_details,
+                'vendor_objs':vendor_objs,
+                'vendor_comments':vendor_comments,
+                'vendor_history':vendor_history,
         }
     return render(request,'zohomodules/vendor/vendor_detailsnew.html',content)
 
@@ -650,15 +681,26 @@ def Vendor_edit(request,pk):
             return redirect('/')
     log_details= LoginDetails.objects.get(id=log_id)
 
-    if log_details.user_type == 'Company':
-        dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details,status='New')
+   
+
+    if 'login_id' in request.session:
+        if request.session.has_key('login_id'):
+            log_id = request.session['login_id']
+           
+        else:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        if log_details.user_type=='Staff':
+            staff_details=StaffDetails.objects.get(login_details=log_details)
+            dash_details = CompanyDetails.objects.get(id=staff_details.company.id)
+
+        else:    
+            dash_details = CompanyDetails.objects.get(login_details=log_details)
+
+        allmodules= ZohoModules.objects.get(company=dash_details,status='New') 
+
         vendor_obj=Vendor.objects.get(id=pk)
 
-    if log_details.user_type == 'Staff':
-        dash_details = StaffDetails.objects.get(login_details=log_details)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        vendor_obj=Vendor.objects.get(id=pk)
     vendor_contact_obj=VendorContactPerson.objects.filter(vendor=vendor_obj)  
     comp_payment_terms=Company_Payment_Term.objects.filter(company=dash_details)
    
@@ -706,6 +748,7 @@ def do_vendor_edit(request,pk):
             vendor_data.website=request.POST['website']
             vendor_data.gst_treatment=request.POST['gst']
             vendor_data.vendor_status="Active"
+            vendor_data.remarks=request.POST['remark']
 
             x=request.POST['gst']
             if x=="Unregistered Business-not Registered under GST":
@@ -810,7 +853,7 @@ def do_vendor_edit(request,pk):
                                 title=ele[0],first_name=ele[1],last_name=ele[2],email=ele[3],
                                 work_phone=ele[4],mobile=ele[5],skype_name_number=ele[6],designation=ele[7],department=ele[8],company=dash_details,vendor=vendor
                             )
-            return redirect('view_vendor_list')
+            return redirect('view_vendor_details',pk)
     
 
 def delete_vendors(request, pk):

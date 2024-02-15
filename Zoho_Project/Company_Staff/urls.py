@@ -47,6 +47,11 @@ urlpatterns = [
     path('check_email_exist',views.check_email_exist,name='check_email_exist'),
     path('check_work_phone_exist',views.check_work_phone_exist,name='check_work_phone_exist'),
     path('check_phonenumber_exist',views.check_phonenumber_exist,name='check_phonenumber_exist'),
+    path('check_pan',views.check_pan,name='check_pan'),
+    path('check_gst',views.check_gst,name='check_gst'),
+    
+    
+    
     
     
     
