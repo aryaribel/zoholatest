@@ -49,7 +49,9 @@ urlpatterns = [
     path('check_phonenumber_exist',views.check_phonenumber_exist,name='check_phonenumber_exist'),
     path('check_pan',views.check_pan,name='check_pan'),
     path('check_gst',views.check_gst,name='check_gst'),
-    
+    path('sort_vendor/<int:selectId>/<int:pk>',views.sort_vendor,name='sort_vendor'),
+    path('vendor_status_change/<int:statusId>/<int:pk>',views.vendor_status_change,name='vendor_status_change'),
+  
     
     
     

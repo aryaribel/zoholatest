@@ -142,9 +142,9 @@
 
 
                     <div class="dropdown-menu m-1">
-                      <a class="dropdown-item" href="{% url 'view_vendor_list' %}">All</a>
-                      <a class="dropdown-item" href="{% url 'sort_vendor_by_name' %}">Name</a>
-                      <a class="dropdown-item" href="{% url 'sort_vendor_by_amount' %}">Amount</a>
+                      <a class="dropdown-item" href="{% url 'sort_vendor' 0 vendor_obj.id %}">All</a>
+                      <a class="dropdown-item" href="{% url 'sort_vendor' 1 vendor_obj.id %}">Name</a>
+                      <a class="dropdown-item" href="{% url 'sort_vendor' 2 vendor_obj.id %}">Amount</a>
                     </div>
                     <a class="btn text-center btn-outline-warning btn-sm" id="filterbutton" data-bs-toggle="dropdown"
                       aria-haspopup="true" aria-expanded="false" role="button">
@@ -152,9 +152,9 @@
                     </a>
 
                     <div class="dropdown-menu m-1 ">
-                      <a class="dropdown-item" href="{% url 'view_vendor_list' %}">All</a>
-                      <a class="dropdown-item" href="{% url 'view_vendor_active' %}">Active</a>
-                      <a class="dropdown-item" href="{% url 'view_vendor_inactive' %}">Inactive</a>
+                      <a class="dropdown-item" href="{% url 'vendor_status_change' 0 vendor_obj.id  %}">All</a>
+                      <a class="dropdown-item" href="{% url 'vendor_status_change' 1 vendor_obj.id %}">Active</a>
+                      <a class="dropdown-item" href="{% url 'vendor_status_change' 2 vendor_obj.id %}">Inactive</a>
                     </div>
                     <a class="btn btn btn-outline-warning btn-sm " style="text-align: right;"
                       href="{% url 'vendor' %}"><i class="fa fa-plus "></i>
@@ -471,6 +471,9 @@
                             <p>Email : {{vendor_obj.vendor_email}}</p>
                             {% endif %}
                             <p>No Credit Limit Set</p>
+                          </div>
+                          <div class="col-md-4">
+                            <h6 class="T-Balance">Balance: {{vendor_obj.current_balance}}</h6>
                           </div>
 
                           <hr>

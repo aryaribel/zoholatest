@@ -115,17 +115,10 @@
                 <div class="form-group row mt-4">
                     <div class="col-sm-12 col-md-3 col-lg-3 col-form-label"><label>Vendor Display Name</label></div>
                     <div class="col-sm-12 col-md-6 col-lg-7">
-                        <div class="row">
-                            <div class="col-sm-12 col-md-6 col-lg-4">
-                                 <input type="text" class="form-control bg-light text-dark  " id="vTitle" name="v_display_name"  >
-                            </div>
-                            <div class="col-sm-12 col-md-6 col-lg-4">
-                                <input type="text" class="form-control bg-light text-dark  " id="vFname" name=""  >
-                            </div>
-                            <div class="col-sm-12 col-md-6 col-lg-4">
-                                <input type="text" class="form-control bg-light text-dark  " id="vLname" name=""  >
-                            </div>
-                        </div>
+                       
+                        <select class="form-control bg-light text-dark "  name="v_display_name" id="v_display_name">
+                            
+                        </select>
                         
                            
                             
@@ -364,7 +357,7 @@
                     <div class="form-group row mt-4">
                         <label class="col-sm-12 col-md-3 col-lg-3 col-form-label text-white" > Opening Balance Amount</label>                    
                         <div class=" col-sm-12 col-md-3 col-lg-3">
-                            <input  type="number" class="form-control bg-light text-dark" name="opening_bal">      
+                            <input  type="number" class="form-control bg-light text-dark" name="opening_bal" value="0.00">      
                         </div>
                     </div>
                     
@@ -820,25 +813,38 @@
 
         
       const Title = document.getElementById('select1');
-      const fname = document.getElementById('fname');
-      const laname = document.getElementById('lname');
-      const vTitle = document.getElementById('vTitle');
-      const vFname = document.getElementById('vFname');
-      const vLname = document.getElementById('vLname');
+const fname = document.getElementById('fname');
+const laname = document.getElementById('lname');
+const vDisplayName = document.getElementById('v_display_name');
 
-      vTitle.value = Title.value 
-      // Listen for input events on the initial input fields
-      Title.addEventListener('input', updateOutputFields);
-      fname.addEventListener('input', updateOutputFields);
-      laname.addEventListener('input', updateOutputFields);
+// Listen for input events on the initial input fields
+Title.addEventListener('input', updateOutputFields);
+fname.addEventListener('input', updateOutputFields);
+laname.addEventListener('input', updateOutputFields);
 
-      // Function to update the output fields
-      function updateOutputFields() {
-        vTitle.value = Title.value + ' ' + fname.value + ' ' + laname.value;
-        vFname.value = fname.value + ' ' + laname.value;
-        vLname.value = laname.value + ' ' + fname.value;
-    }
-    
+// Function to update the output fields
+function updateOutputFields() {
+    const selectedTitle = Title.value;
+    const selectedFname = fname.value;
+    const selectedLname = laname.value;
+
+    // Clear existing options
+    vDisplayName.innerHTML = '';
+ // Add new options based on input field values
+ const option1 = document.createElement('option');
+    option1.text = selectedTitle + ' ' + selectedFname + ' ' + selectedLname;
+    vDisplayName.add(option1);
+
+   
+
+    const option2 = document.createElement('option');
+    option2.text = selectedFname + ' ' + selectedLname;
+    vDisplayName.add(option2);
+
+    const option3 = document.createElement('option');
+    option3.text = selectedLname + ' ' + selectedFname;
+    vDisplayName.add(option3);
+}
 
 </script>
 

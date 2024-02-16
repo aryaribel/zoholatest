@@ -31,11 +31,7 @@
 </style>
 <div class="body-wrapper">
 
-    <!-- class="row fixed-top " -->
-    <!-- style=" position: fixed;" -->
-
-    <!-- <section > -->
-    <!-- <div class="fixed-top" style="top: 7rem; margin-left: 18rem;" > -->
+   
     <div class="container-fluid">
 
 
@@ -54,8 +50,6 @@
             <div style="top: 7rem; ">
 
 
-                <!-- <div  style="height: 600px;overflow-y: scroll;"> -->
-                <!-- <h3  class="mb-5  text-white " style="font-size: 2rem;">New Vendor</h3><br>      -->
 
                 <form method="post" action="{% url 'do_vendor_edit' vendor_obj.id %}" enctype="multipart/form-data"
                     class="">
@@ -112,17 +106,10 @@
 
 
 
-                                <div class="row">
-                                    <div class="col-sm-12 col-md-6 col-lg-4">
-                                         <input type="text" class="form-control bg-light text-dark  " id="vTitle" name="v_display_name"  >
-                                    </div>
-                                    <div class="col-sm-12 col-md-6 col-lg-4">
-                                        <input type="text" class="form-control bg-light text-dark  " id="vFname" name=""  >
-                                    </div>
-                                    <div class="col-sm-12 col-md-6 col-lg-4">
-                                        <input type="text" class="form-control bg-light text-dark  " id="vLname" name=""  >
-                                    </div>
-                                </div>
+                              
+                        <select class="form-control bg-light text-dark "  name="v_display_name" id="v_display_name">
+                            
+                        </select>
 
 
                         </div>
@@ -423,7 +410,7 @@
                                 
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="op_type" id="credit" value="credit"
-                                        {% if vendor_obj.opening_balance_type != "debit" %} checked {% endif %}>
+                                        {% if vendor_obj.opening_balance_type == "credit" %} checked {% endif %}>
                                     <label class="form-check-label text-white" for="credit">Credit</label>
                                 </div>
 
@@ -865,6 +852,11 @@
 
 
 <script>
+
+    $(document).ready(function() {
+        gstPan_function();
+    });
+    
     function gstPan_function() {
         var x = document.getElementById('GSTT').value
         if (x == "Unregistered Business-not Registered under GST") {
@@ -1433,29 +1425,62 @@ $('#mphone').on('input', function() {
 
     });
 
-      // Name display 
+    // Name display 
 
         
-      const Title = document.getElementById('select1');
-      const fname = document.getElementById('fname');
-      const laname = document.getElementById('lname');
-      const vTitle = document.getElementById('vTitle');
-      const vFname = document.getElementById('vFname');
-      const vLname = document.getElementById('vLname');
+    const Title = document.getElementById('select1');
+const fname = document.getElementById('fname');
+const laname = document.getElementById('lname');
+const vDisplayName = document.getElementById('v_display_name');
 
-      vTitle.value = Title.value 
-      // Listen for input events on the initial input fields
-      Title.addEventListener('input', updateOutputFields);
-      fname.addEventListener('input', updateOutputFields);
-      laname.addEventListener('input', updateOutputFields);
+const selectedTitle = Title.value;
+    const selectedFname = fname.value;
+    const selectedLname = laname.value;
 
-      // Function to update the output fields
-      function updateOutputFields() {
-        vTitle.value = Title.value + ' ' + fname.value + ' ' + laname.value;
-        vFname.value = fname.value + ' ' + laname.value;
-        vLname.value = laname.value + ' ' + fname.value;
-    }
-    
+    // Clear existing options
+    vDisplayName.innerHTML = '';
+ // Add new options based on input field values
+ const option1 = document.createElement('option');
+    option1.text = selectedTitle + ' ' + selectedFname + ' ' + selectedLname;
+    vDisplayName.add(option1);
+
+   
+
+    const option2 = document.createElement('option');
+    option2.text = selectedFname + ' ' + selectedLname;
+    vDisplayName.add(option2);
+
+    const option3 = document.createElement('option');
+    option3.text = selectedLname + ' ' + selectedFname;
+    vDisplayName.add(option3);
+// Listen for input events on the initial input fields
+Title.addEventListener('input', updateOutputFields);
+fname.addEventListener('input', updateOutputFields);
+laname.addEventListener('input', updateOutputFields);
+
+// Function to update the output fields
+function updateOutputFields() {
+    const selectedTitle = Title.value;
+    const selectedFname = fname.value;
+    const selectedLname = laname.value;
+
+    // Clear existing options
+    vDisplayName.innerHTML = '';
+ // Add new options based on input field values
+ const option1 = document.createElement('option');
+    option1.text = selectedTitle + ' ' + selectedFname + ' ' + selectedLname;
+    vDisplayName.add(option1);
+
+   
+
+    const option2 = document.createElement('option');
+    option2.text = selectedFname + ' ' + selectedLname;
+    vDisplayName.add(option2);
+
+    const option3 = document.createElement('option');
+    option3.text = selectedLname + ' ' + selectedFname;
+    vDisplayName.add(option3);
+}
 
 </script>
 {% endblock %}

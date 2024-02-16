@@ -411,6 +411,7 @@ def add_vendor(request):
             vendor_data.gst_treatment=request.POST['gst']
             vendor_data.vendor_status="Active"
             vendor_data.remarks=request.POST['remark']
+            vendor_data.current_balance=request.POST['opening_bal']
 
             x=request.POST['gst']
             if x=="Unregistered Business-not Registered under GST":
@@ -422,7 +423,13 @@ def add_vendor(request):
 
             vendor_data.source_of_supply=request.POST['source_supply']
             vendor_data.currency=request.POST['currency']
-            vendor_data.opening_balance_type=request.POST['op_type']
+            print(vendor_data.currency)
+            op_type=request.POST.get('op_type')
+            if op_type is not None:
+                vendor_data.opening_balance_type=op_type
+            else:
+                vendor_data.opening_balance_type='Opening Balance not selected'
+    
             vendor_data.opening_balance=request.POST['opening_bal']
             vendor_data.payment_term=Company_Payment_Term.objects.get(id=request.POST['payment_terms'])
 
@@ -451,7 +458,7 @@ def add_vendor(request):
             vendor_history_obj.login_details=log_details
             vendor_history_obj.vendor=vendor_data
             vendor_history_obj.date=date.today()
-            vendor_history_obj.action='Registration Completed'
+            vendor_history_obj.action='Completed'
             vendor_history_obj.save()
 
     # .......................................................adding to remaks table.....................
@@ -497,6 +504,9 @@ def add_vendor(request):
 
             return redirect('view_vendor_list')
     
+
+
+
 
 
 def sort_vendor_by_name(request):
@@ -760,7 +770,11 @@ def do_vendor_edit(request,pk):
 
             vendor_data.source_of_supply=request.POST['source_supply']
             vendor_data.currency=request.POST['currency']
-            vendor_data.opening_balance_type=request.POST['op_type']
+            op_type=request.POST.get('op_type')
+            if op_type is not None:
+                vendor_data.opening_balance_type=op_type
+            else:
+                vendor_data.opening_balance_type='Opening Balance not selected'
             vendor_data.opening_balance=request.POST['opening_bal']
             vendor_data.payment_term=Company_Payment_Term.objects.get(id=request.POST['payment_terms'])
             
@@ -1016,4 +1030,91 @@ def add_space_before_first_digit(data):
         if char.isdigit():
             return data[:index] + ' ' + data[index:]
     return data
+
+
+def sort_vendor(request,selectId,pk):
+    if 'login_id' in request.session:
+        if request.session.has_key('login_id'):
+            log_id = request.session['login_id']
+           
+        else:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+
+        if log_details.user_type=='Staff':
+            staff_details=StaffDetails.objects.get(login_details=log_details)
+            dash_details = CompanyDetails.objects.get(id=staff_details.company.id)
+
+        else:    
+            dash_details = CompanyDetails.objects.get(login_details=log_details)
+        allmodules= ZohoModules.objects.get(company=dash_details,status='New')
+
+        vendor_obj = Vendor.objects.get(id=pk)
+        vendor_objs = Vendor.objects.filter(company=dash_details)
+
+        if selectId == 0:
+            vendor_objs=Vendor.objects.filter(company=dash_details)
+        if selectId == 1:
+            vendor_objs=Vendor.objects.filter(company=dash_details).order_by('first_name')
+        if selectId == 2:
+            vendor_objs=Vendor.objects.filter(company=dash_details).order_by('opening_balance')
+           
+        
+        vendor_comments=Vendor_comments_table.objects.filter(vendor=vendor_obj)
+        vendor_history=VendorHistory.objects.filter(vendor=vendor_obj)
+    
+        content = {
+                'details': dash_details,
+                'allmodules': allmodules,
+                'vendor_obj':vendor_obj,
+                'log_details':log_details,
+                'vendor_objs':vendor_objs,
+                'vendor_comments':vendor_comments,
+                'vendor_history':vendor_history,
+        }
+    return render(request,'zohomodules/vendor/vendor_detailsnew.html',content)
+
+def vendor_status_change(request,statusId,pk):
+    if 'login_id' in request.session:
+        if request.session.has_key('login_id'):
+            log_id = request.session['login_id']
+           
+        else:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+
+        if log_details.user_type=='Staff':
+            staff_details=StaffDetails.objects.get(login_details=log_details)
+            dash_details = CompanyDetails.objects.get(id=staff_details.company.id)
+
+        else:    
+            dash_details = CompanyDetails.objects.get(login_details=log_details)
+        allmodules= ZohoModules.objects.get(company=dash_details,status='New')
+
+        vendor_obj = Vendor.objects.get(id=pk)
+        vendor_objs = Vendor.objects.filter(company=dash_details)
+
+        if statusId == 0:
+            vendor_objs=Vendor.objects.filter(company=dash_details)
+        if statusId == 1:
+            vendor_objs=Vendor.objects.filter(company=dash_details,vendor_status='Active').order_by('-id')
+        if statusId == 2:
+            vendor_objs=Vendor.objects.filter(company=dash_details,vendor_status='Inactive').order_by('-id')
+           
+        
+        vendor_comments=Vendor_comments_table.objects.filter(vendor=vendor_obj)
+        vendor_history=VendorHistory.objects.filter(vendor=vendor_obj)
+    
+        content = {
+                'details': dash_details,
+                'allmodules': allmodules,
+                'vendor_obj':vendor_obj,
+                'log_details':log_details,
+                'vendor_objs':vendor_objs,
+                'vendor_comments':vendor_comments,
+                'vendor_history':vendor_history,
+        }
+    return render(request,'zohomodules/vendor/vendor_detailsnew.html',content)
+
+
 #---------------------------------------End----------------------------------------------------------------            
