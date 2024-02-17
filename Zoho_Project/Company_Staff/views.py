@@ -759,6 +759,26 @@ def do_vendor_edit(request,pk):
             vendor_data.gst_treatment=request.POST['gst']
             vendor_data.vendor_status="Active"
             vendor_data.remarks=request.POST['remark']
+            
+            cob=Decimal(request.POST['opening_bal'])
+            oc=Decimal(vendor_data.current_balance) 
+            ob=Decimal(vendor_data.opening_balance) 
+
+            if cob > ob:
+                diffadd=cob-ob
+                oc=oc + diffadd
+                vendor_data.current_balance=oc
+                vendor_data.opening_balance=cob
+            elif cob < ob:
+                diffadd=ob-cob
+                oc=oc-diffadd
+                vendor_data.current_balance=oc
+                vendor_data.opening_balance=cob
+
+            else:
+                vendor_data.current_balance=request.POST['opening_bal']   
+       
+            
 
             x=request.POST['gst']
             if x=="Unregistered Business-not Registered under GST":
@@ -962,34 +982,68 @@ def add_vendor_file(request,pk):
 
 
     
-def vendor_shareemail(request,pk):
-    try:
-            if request.method == 'POST':
-                emails_string = request.POST['email']
+# def vendor_shareemail(request,pk):
+#     try:
+#             if request.method == 'POST':
+#                 emails_string = request.POST['email']
 
     
-                emails_list = [email.strip() for email in emails_string.split(',')]
-                vendor_obj=Vendor.objects.get(id=pk)
+#                 emails_list = [email.strip() for email in emails_string.split(',')]
+#                 vendor_obj=Vendor.objects.get(id=pk)
                         
-                context = {'vendor_obj':vendor_obj}
-                template_path = 'zohomodules/vendor/vendormailoverview.html'
-                template = get_template(template_path)
-                html  = template.render(context)
-                result = BytesIO()
-                pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
-                pdf = result.getvalue()
-                filename = f'{vendor_obj.first_name}details - {vendor_obj.id}.pdf'
-                subject = f"{vendor_obj.first_name}{vendor_obj.last_name}  - {vendor_obj.id}-details"
-                email = EmailMessage(subject, f"Hi,\nPlease find the attached transaction details - File-{vendor_obj.first_name} {vendor_obj.last_name} .\n--\nRegards,\n", from_email=settings.EMAIL_HOST_USER, to=emails_list)
-                email.attach(filename, pdf, "application/pdf")
-                email.send(fail_silently=False)
-                messages.success(request, 'Transaction has been shared via email successfully..!')
-                return redirect('view_vendor_details',pk)
+#                 context = {'vendor_obj':vendor_obj}
+#                 template_path = 'zohomodules/vendor/vendormailoverview.html'
+#                 template = get_template(template_path)
+#                 html  = template.render(context)
+#                 result = BytesIO()
+#                 pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+#                 pdf = result.getvalue()
+#                 filename = f'{vendor_obj.first_name}details - {vendor_obj.id}.pdf'
+#                 subject = f"{vendor_obj.first_name}{vendor_obj.last_name}  - {vendor_obj.id}-details"
+#                 email = EmailMessage(subject, f"Hi,\nPlease find the attached transaction details - File-{vendor_obj.first_name} {vendor_obj.last_name} .\n--\nRegards,\n", from_email=settings.EMAIL_HOST_USER, to=emails_list)
+#                 email.attach(filename, pdf, "application/pdf")
+#                 email.send(fail_silently=False)
+#                 messages.success(request, 'Transaction has been shared via email successfully..!')
+#                 return redirect('view_vendor_details',pk)
+#     except Exception as e:
+#             print(e)
+#             messages.error(request, f'{e}')
+#             return redirect('view_vendor_details',pk)
+
+
+
+
+def vendor_shareemail(request, pk):
+    try:
+        if request.method == 'POST':
+            emails_string = request.POST['email']
+            emails_list = [email.strip() for email in emails_string.split(',')]
+            vendor_obj = Vendor.objects.get(id=pk)
+
+            context = {'vendor_obj': vendor_obj}
+            template_path = 'zohomodules/vendor/vendormailoverview.html'
+            template = get_template(template_path)
+            html = template.render(context)
+            result = BytesIO()
+            pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+            pdf = result.getvalue()
+            filename = f'{vendor_obj.first_name}details - {vendor_obj.id}.pdf'
+            subject = f"{vendor_obj.first_name} {vendor_obj.last_name} - {vendor_obj.id}-details"
+            
+            email = EmailMessage(subject, f"Hi,\nPlease find the attached transaction details - File-{vendor_obj.first_name} {vendor_obj.last_name} .\n--\nRegards,\n", to=emails_list)
+            email.attach(filename, pdf, "application/pdf")
+            email.from_email = settings.EMAIL_HOST_USER  # Set from_email separately
+
+            email.send(fail_silently=False)
+            messages.success(request, 'Transaction has been shared via email successfully..!')
+            return redirect('view_vendor_details', pk)
     except Exception as e:
-            print(e)
-            messages.error(request, f'{e}')
-            return redirect('view_vendor_details',pk)
-    
+        print(e)
+        messages.error(request, f'{e}')
+        return redirect('view_vendor_details', pk)
+
+
+
 
 def payment_terms_add(request):
     if 'login_id' in request.session:

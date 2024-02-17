@@ -89,7 +89,7 @@
                         <div class="dropdown-menu m-1">
                           <a class="dropdown-item" href="{% url 'view_vendor_list' %}">All</a>
                           <a class="dropdown-item" href="{% url 'sort_vendor_by_name' %}">Name</a>
-                          <a class="dropdown-item" href="{% url 'sort_vendor_by_amount' %}">Amount</a>
+                          <a class="dropdown-item" href="{% url 'sort_vendor_by_amount' %}">Balance</a>
                         </div>
                       </div>
                     </div>
@@ -189,7 +189,9 @@
                   
                   <td>{{v.vendor_status}}</td>
                  
-                  <td>{{v.current_balance}}</td>
+                  <td>
+                    {{v.current_balance}}
+                  </td>
                   <!-- <td><a href="{% url 'delete_vendor' v.id %}" onclick="alert('Do You Want to Delete?')"><i class="fas fa-trash text-danger text-center"></i></a></td> -->
 
   
