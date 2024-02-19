@@ -1011,36 +1011,78 @@ def add_vendor_file(request,pk):
 #             return redirect('view_vendor_details',pk)
 
 
+def vendor_shareemail(request,pk):
+    if 'login_id' in request.session:
+        if request.session.has_key('login_id'):
+            log_id = request.session['login_id']
+           
+        else:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        if log_details.user_type=='Staff':
+            staff_details=StaffDetails.objects.get(login_details=log_details)
+            dash_details = CompanyDetails.objects.get(id=staff_details.company.id)
+
+        else:    
+            dash_details = CompanyDetails.objects.get(login_details=log_details)
+    
+        vendor_obj=Vendor.objects.get(id=pk)
+
+        context = {'vendor_obj':vendor_obj,'details':dash_details}
+
+        emails_string = request.POST['email']
+        cemail = [email.strip() for email in emails_string.split(',')]
+        template_path = 'zohomodules/vendor/vendormailoverview.html'
+        template = get_template(template_path)
+        html  = template.render(context)
+        
+        result = BytesIO()
+        pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+        pdf = result.getvalue()
+        filename = f'Transactions.pdf'
+        subject = f"Transaction Details"
+        
+        email = EmailMessage(subject, f"Hi,\nPlease find the attached transaction details {vendor_obj.first_name} {vendor_obj.last_name}.\n", to=cemail)
+        email.from_email = settings.EMAIL_HOST_USER  # Set the 'from' address separately
+        email.attach(filename, pdf, "application/pdf")
+        email.send(fail_silently=False)
+
+        messages.success(request, 'Transaction has been shared via email successfully..!')
+        return redirect('view_vendor_details',pk)
 
 
-def vendor_shareemail(request, pk):
-    try:
-        if request.method == 'POST':
-            emails_string = request.POST['email']
-            emails_list = [email.strip() for email in emails_string.split(',')]
-            vendor_obj = Vendor.objects.get(id=pk)
 
-            context = {'vendor_obj': vendor_obj}
-            template_path = 'zohomodules/vendor/vendormailoverview.html'
-            template = get_template(template_path)
-            html = template.render(context)
-            result = BytesIO()
-            pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
-            pdf = result.getvalue()
-            filename = f'{vendor_obj.first_name}details - {vendor_obj.id}.pdf'
-            subject = f"{vendor_obj.first_name} {vendor_obj.last_name} - {vendor_obj.id}-details"
+
+
+# def vendor_shareemail(request, pk):
+#     try:
+#         if request.method == 'POST':
+#             emails_string = request.POST['email']
+#             emails_list = [email.strip() for email in emails_string.split(',')]
+#             vendor_obj = Vendor.objects.get(id=pk)
+
+#             context = {'vendor_obj': vendor_obj}
+#             template_path = 'zohomodules/vendor/vendormailoverview.html'
+#             template = get_template(template_path)
+#             html = template.render(context)
+#             result = BytesIO()
+#             pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+#             pdf = result.getvalue()
+#             filename = f'{vendor_obj.first_name}details - {vendor_obj.id}.pdf'
+#             subject = f"{vendor_obj.first_name} {vendor_obj.last_name} - {vendor_obj.id}-details"
             
-            email = EmailMessage(subject, f"Hi,\nPlease find the attached transaction details - File-{vendor_obj.first_name} {vendor_obj.last_name} .\n--\nRegards,\n", to=emails_list)
-            email.attach(filename, pdf, "application/pdf")
-            email.from_email = settings.EMAIL_HOST_USER  # Set from_email separately
+#             email = EmailMessage(subject, f"Hi,\nPlease find the attached transaction details - File-{vendor_obj.first_name} {vendor_obj.last_name} .\n--\nRegards,\n", to=emails_list)
+#             email.attach(filename, pdf, "application/pdf")
+#             email.from_email = settings.EMAIL_HOST_USER  # Set from_email separately
 
-            email.send(fail_silently=False)
-            messages.success(request, 'Transaction has been shared via email successfully..!')
-            return redirect('view_vendor_details', pk)
-    except Exception as e:
-        print(e)
-        messages.error(request, f'{e}')
-        return redirect('view_vendor_details', pk)
+#             email.send(fail_silently=False)
+#             messages.success(request, 'Transaction has been shared via email successfully..!')
+#             return redirect('view_vendor_details', pk)
+#     except Exception as e:
+#         print(e)
+#         messages.error(request, f'{e}')
+#         return redirect('view_vendor_details', pk)
+
 
 
 
